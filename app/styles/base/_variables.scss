@@ -1,0 +1,192 @@
+// =====================================================
+// ------------ Siegmeyer II Core Variables ------------
+// =====================================================
+// @author Thomas Bredin-Grey <tom@studiothick>
+// Siegmeyer II: https://github.com/tbredin/Siegmeyer2
+// =====================================================
+
+
+// colors
+// general
+$colors: (
+    yellow:             lighten(yellow, 40%)
+);
+
+$debug-color: tomato;
+
+// susy settings
+$susy: (
+    global-box-sizing: content-box,
+    math: fluid,
+    debug: (
+        color: transparentize($debug-color,0.6)
+    ),
+    use-custom: (
+        rem: true
+    )
+);
+
+$base-font-size: 16px;
+
+// responsive grid settings
+// gutters
+$gutter-width: px-to-ems(20px);
+$column-width: px-to-ems(45px);
+
+// column number at each breakpoint
+$break-0-cols: 6;
+$break-1-cols: 8;
+$break-2-cols: 10;
+$break-3-cols: 12;
+$break-4-cols: 14;
+
+// breakpoint position - where the breakpoint starts
+$break-0-width: 0px;
+$break-1-width: 524px;
+$break-2-width: 768px;
+$break-3-width: 1024px;
+$break-4-width: 1282px;
+
+// max width of grid container
+$break-0-max: 524px;
+$break-1-max: $break-1-width;
+$break-2-max: $break-2-width;
+$break-3-max: $break-3-width;
+$break-4-max: $break-4-width;
+
+// susy breakpoint layouts
+$break-0-layout: $break-0-cols ($column-width $gutter-width);
+$break-1-layout: $break-1-cols ($column-width $gutter-width);
+$break-2-layout: $break-2-cols ($column-width $gutter-width);
+$break-3-layout: $break-3-cols ($column-width $gutter-width);
+$break-4-layout: $break-4-cols ($column-width $gutter-width);
+
+// map for flexible retrieval of breakpoint info
+$breakpoint-map: (
+    break-0: (
+        cols:       $break-0-cols,
+        start:      $break-0-width,
+        max:        $break-0-max,
+        layout:     $break-0-layout
+    ),
+    break-1: (
+        cols:       $break-1-cols,
+        start:      $break-1-width,
+        max:        $break-1-max,
+        layout:     $break-1-layout
+    ),
+    break-2: (
+        cols:       $break-2-cols,
+        start:      $break-2-width,
+        max:        $break-2-max,
+        layout:     $break-2-layout
+    ),
+    break-3: (
+        cols:       $break-3-cols,
+        start:      $break-3-width,
+        max:        $break-3-max,
+        layout:     $break-3-layout
+    ),
+    break-4: (
+        cols:       $break-4-cols,
+        start:      $break-4-width,
+        max:        $break-4-max,
+        layout:     $break-4-layout
+    ),
+);
+
+// breakpoint count
+$breakpoint-number: length(map-keys($breakpoint-map));
+
+// debug grid columns, baseline grid & breakpoints
+$debug-grid: true;
+$debug-baseline: false;
+$debug-breakpoints: true;
+
+// grid opacity
+$grid-opacity: 0.2;
+
+
+
+
+// =====================================================
+// ---------- Siegmeyer II Baseline Variables ----------
+// =====================================================
+// Baseline modified from Sassline: http://sassline.com/
+// by Jake Giltsoff: https://github.com/designbyjake
+// =====================================================
+
+// Breakpoint sizes in ems. Add more values here to add more breakpoints.
+// Change names if you prefer, it wont break the mixin as long as they are strings not just numbers.
+// Note: not relative to root font-size.
+$breakpoints: (
+    break-0: no-unit($break-0-width), //     Mobile first
+    break-1: no-unit($break-1-width), //   ~ Small tablet up
+    break-2: no-unit($break-2-width), //   ~ Large tablet up
+    break-3: no-unit($break-3-width), //   ~ Desktop up
+    break-4: no-unit($break-4-width)  //   ~ Large desktop up
+);
+
+// Root font-sizes for each breakpoint. Set to half desired line-height of body text.
+// ! Make sure to have as many sizes as breakpoints above.
+$rootsizes: (
+    rootsize-0: 12,   // 24px line-height body text
+    rootsize-1: 14,   // 28px line-height body text
+    rootsize-2: 15,   // 30px line-height body text
+    rootsize-3: 17,   // 34px line-height body text
+    rootsize-4: 18    // 36px line-height body text
+);
+
+// Control the line-length with max-width values for the container.
+// Aim for 75–100 characters a line when possible, at smaller sizes type size is more important.
+// ! Make sure to have as many widths as breakpoints above.
+$maxwidths: (
+    maxwidth-0: 500,  // 500px wide
+    maxwidth-1: 550,  // 550px wide
+    maxwidth-2: 600,  // 600px wide
+    maxwidth-3: 680,  // 680px wide
+    maxwidth-4: 750   // 750px wide
+);
+
+// Add typefaces here.
+// Add weight and style details too.
+// Set cap height to set to the baseline.
+$bodytype: (
+    font-family: '"Source Sans", Helvetica, sans-serif',
+    regular: 100,
+    bold: 400,
+    italic: italic,
+    cap-height: 0.66
+);
+
+$headingtype: (
+    font-family: 'Georgserif',
+    regular: 400,
+    bold: 700,
+    cap-height: 0.48
+);
+
+$monospacetype: (
+    font-family: 'Menlo, monospace',
+    regular: 400,
+    cap-height: 0.68
+);
+
+
+// Here are some cap-height sizes to get you started:
+// Georgia: 0.66, Times / Times New Roman: 0.65, Palatino: 0.52
+// Lucida Grande: 0.72, Helvetica: 0.65, Verdana: 0.76, Tahoma: 0.76
+
+// Text colours. British English.
+$headingColour: #2E2E2E;
+$bodyColour: #494949;
+$linkColour: #1f3364;
+$hoverColour: darken($linkColour, 5%);
+$captionColour: #7E7E7E;
+$white: #FFFFFF;
+
+// Background colours.
+$headBackgroundColour: #29323A;
+$backgroundColour: #FCFCFC;
+$codeBackgroundColour: #29323A;
+

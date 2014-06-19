@@ -1,0 +1,119 @@
+// =====================================================
+// ------- Siegmeyer II Tools - Text Truncation --------
+// =====================================================
+// @author Thomas Bredin-Grey <tom@studiothick.com>
+// Siegmeyer II: https://github.com/tbredin/Siegmeyer2
+// =====================================================
+
+
+// multi-line text-overflow
+// NOTE: usage needs to be very specific and is as follows:
+// First, wrap your text element in a div and apply this mixin to it.
+// Tweak the height (in your editor - this won't work in dev tools)
+// until the ellipsis appears, and be careful that the ellipsis
+// doesn't show for content that only *just* fits.
+@mixin multiline-text-overflow($height, $color: #fff, $in-media: false) {
+    @if ($in-media == true) {
+        @include multiline-text-overflow-common;
+    } @else {
+        @extend %multiline-text-overflow;
+    }
+
+    @include multiline-text-overflow-height($height);
+
+    $rgba: rgba($color, 1);
+    $rgb0: transparentize($rgba, 1);
+
+    &:after {
+        background: linear-gradient(to right bottom, $rgb0, $rgba, $rgba);
+    }
+}
+
+
+// resets the height of the overflowed element - for less bloated output with media queries
+@mixin multiline-text-overflow-height($height) {
+    height: $height;
+
+    &:before {
+        height: $height;
+    }
+}
+
+
+// helpers for above (emulates text overflow on multilines)
+// shouldn't need to use these directly
+@mixin multiline-text-overflow-common {
+    overflow: hidden;
+
+    &:before {
+        content:"";
+        float: left;
+        width: 5px;
+    }
+     > *:first-child {
+        float: right;
+        width: 100%;
+        margin-left: -5px;
+    }
+
+    > *:last-child {
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+
+    &:after {
+        content: "\02026";
+
+        box-sizing: content-box;
+
+        float: right;
+        position: relative;
+        top: -25px;
+        left: 100%;
+        width: 3em;
+        margin-left: -3em;
+        padding-right: 5px;
+        text-align: right;
+        background-size: 100% 100%;
+    }
+}
+
+%multiline-text-overflow {
+    @include multiline-text-overflow-common;
+}
+
+// single line text overflow extend
+%text-overflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// faded text-overflow effect
+// can accept different heights for different breakpoints
+@mixin set-fade-overflow($height, $bg) {
+    height: auto;
+    max-height: $height;
+    @extend %set-fade-overflow-common;
+
+    &:before {
+        background: linear-gradient(top, transparentize($bg, 1), $bg);
+    }
+}
+
+%set-fade-overflow-common {
+    position: relative;
+    overflow: hidden;
+
+    &:before {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        cursor: text;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        z-index: 10;
+        height: 85%;
+    }
+}

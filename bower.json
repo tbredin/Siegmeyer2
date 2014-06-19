@@ -1,0 +1,11 @@
+{
+  "name": "siegmeyer2",
+  "private": false,
+  "dependencies": {
+    "modernizr": "~2.6.2",
+    "jquery": "~1.11.0"
+  },
+  "devDependencies": {
+    "scut": "~0.10.4"
+  }
+}

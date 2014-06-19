@@ -1,0 +1,63 @@
+// =====================================================
+// ------------- Siegmeyer II Tools - Misc -------------
+// =====================================================
+// @author Thomas Bredin-Grey <tom@studiothick.com>
+// Siegmeyer II: https://github.com/tbredin/Siegmeyer2
+// =====================================================
+
+
+// selection color
+// includes futureproofing for support of gradients (not surrently in spec)
+@mixin selection-color($background, $color: false, $text-shadow: false) {
+    ::selection {
+        background: linear-gradient(to bottom, lighten($background, 4%), $background, darken($background, 4%));
+
+        @if $color != false {
+            color: $color;
+        }
+        @if $text-shadow == false {
+            text-shadow: none;
+        } @else {
+            text-shadow: $text-shadow;
+        }
+    }
+}
+
+
+// better than writing longhand rgba for transparent black
+@function black($opacity){
+    @return rgba(0, 0, 0, $opacity);
+}
+
+
+// better than writing longhand rgba for transparent white
+@function white($opacity){
+    @return rgba(255, 255, 255, $opacity);
+}
+
+
+//placeholder text
+@mixin placeholder {
+    //only output for modern browsers
+    &:-moz-placeholder { @content; }
+    &::-moz-placeholder { @content; }
+    &::-webkit-input-placeholder { @content; }
+}
+
+
+//create render layer
+%make-layer {
+    transform: translateZ(0);
+}
+
+
+// resets lists
+%plain-list {
+    list-style: none;
+    padding-left: 0;
+
+    > li {
+        list-style: none;
+        padding-left: 0;
+    }
+}

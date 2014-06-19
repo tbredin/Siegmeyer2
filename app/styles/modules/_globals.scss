@@ -1,0 +1,37 @@
+// =====================================================
+// ------------- Siegmeyer II Global Styles ------------
+// =====================================================
+// @author Thomas Bredin-Grey <tbredin@gmail.com>
+// Siegmeyer II: https://github.com/tbredin/Siegmeyer2
+// -----------------------------------------------------
+// Based heavily on Sassline: http://sassline.com/
+// by Jake Giltsoff: https://github.com/designbyjake
+// =====================================================
+
+
+body {
+    background-color: lighten(yellow, 50%);
+    color: $bodyColour;
+    overflow-x: hidden;
+}
+
+@if $debug-breakpoints == true and $debug-allow == true {
+    @include debug-breakpoints;
+}
+
+
+img {
+    -ms-interpolation-mode: bicubic;
+    height: auto;
+    vertical-align: middle;
+    max-width: 100%;
+
+    @include breakpoint(break-1) {
+        margin: 0 auto;
+        width: auto;
+    }
+
+    &[src$=".svg"] {
+        max-width: 100%;
+    }
+}

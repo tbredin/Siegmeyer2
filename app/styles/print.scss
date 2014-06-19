@@ -1,0 +1,107 @@
+/**
+ * Simple print stylesheet, sets some sensible defaults
+ *
+ * @author Thomas Bredin-Grey <tbredin@gmail.com>
+ * @url https://github.com/tbredin/Siegmeyer2
+ */
+
+@import "susy";
+
+@import "base/variables";
+
+@media print {
+    body {
+        background: #fff;
+        font-family: Tahoma, Helvetica, Arial, sans-serif;
+        width: 181mm;
+    }
+
+    hr {
+        height: 1px;
+        display: block;
+        background: #fff;
+        color: #fff;
+        width: 190mm;
+        border: none!important;
+        border-bottom: 1px solid #999!important;
+    }
+
+    table img { float: left; }
+
+    table, td, th { border-collapse: collapse; }
+
+    td, th { border: 1px solid #999!important; padding: 3mm;}
+
+    ul, ol, li {
+        padding-left: 0;
+        list-style: outside none!important;
+    }
+
+    .wrapper, .content {
+        width: auto;
+        margin: 0 5%;
+        padding: 0;
+        border: 0;
+        float: none !important;
+        color: black;
+        background: transparent;
+    }
+
+    body {
+        background: white;
+        font-size: 12pt;
+    }
+
+    .content {
+        margin: 0;
+        padding-top: 1em;
+        border-top: 1px solid #999;
+        width: 190mm;
+        a { text-decoration: none!important; line-height: 1.6; }
+        a:link:after,  a:visited:after {
+            content: " (" attr(href) ") ";
+            font-size: 70%;
+            line-height: 1.6;
+            text-decoration: none!important;
+        }
+        // @todo add your domain
+        a[href^="/"]:after {
+          content: " (http://www.yourdomain.co.nz" attr(href) ") ";
+        }
+        // @todo add your domain
+        a[href^="#"]:after {
+          content: " (http://www.yourdomain.co.nz" attr(href) ") ";
+        }
+    }
+
+    h1, h2, th {
+        text-transform: uppercase;
+        font-family: map-get($headingtype, font-family);
+    }
+
+    h2, h3 {
+        color: $headingColour;
+    }
+
+    dt {
+        color: $headingColor;
+        font-weight: bold;
+    }
+
+    .breadcrumbs {
+        a:link:after,  a:visited:after {
+            content: ""!important;
+        }
+    }
+
+    h1, h2, h3, h4, h5, p, label {
+        text-shadow: none;
+    }
+
+    a:link, a:visited {
+        background: transparent;
+        color: $linkColour;
+        text-shadow: none;
+        text-decoration: underline;
+    }
+}

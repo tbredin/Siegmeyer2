@@ -1,0 +1,56 @@
+// =====================================================
+// ------------ Siegmeyer II Tools - Units -------------
+// =====================================================
+// @author Thomas Bredin-Grey <tom@studiothick.com>
+// Siegmeyer II: https://github.com/tbredin/Siegmeyer2
+// =====================================================
+
+
+// Returns a unitless number
+@function no-unit($number) {
+    $result: $number;
+    @if unit($number) == "px" {
+        $result: $number / 1px;
+    } @else if unit($number) == "em" {
+        $result: $number / 1em;
+    } @else if unit($number) == "%" {
+        $result: $number / 1%;
+    }
+    @return $result;
+}
+
+
+// Converts an em value to px. Should only work in absolute em document context (root level)
+@function em-to-px($value) {
+    @if unit($value) == "em" {
+        $value : no-unit($value) * no-unit($base-font-size);
+        $value : $value * 1px;
+    }
+    @return $value;
+}
+
+
+// Converts a px value to ems. Should only work in absolute em document context (root level), unless $context is specified
+@function px-to-ems($value, $context: $base-font-size) {
+    @if unit($context) == "em" {
+        $context: em-to-px($context);
+    }
+    @if unit($value) == "px" {
+        $value : no-unit($value) / no-unit($context);
+        $value : $value * 1em;
+    }
+    @return $value;
+}
+
+
+// Converts a px value to ems. Should only work in absolute em document context (root level), unless $context is specified
+@function px-to-rems($value, $context: $base-font-size) {
+    @if unit($context) == "rem" {
+        $context: em-to-px($context);
+    }
+    @if unit($value) == "px" {
+        $value : no-unit($value) / no-unit($context);
+        $value : $value * 1em;
+    }
+    @return $value;
+}

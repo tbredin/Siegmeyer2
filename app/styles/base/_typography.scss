@@ -1,0 +1,254 @@
+// =====================================================
+// ----------- Siegmeyer II Basic Typography -----------
+// =====================================================
+// @author Thomas Bredin-Grey <tbredin@gmail.com>
+// Siegmeyer II: https://github.com/tbredin/Siegmeyer2
+// -----------------------------------------------------
+// Based heavily on Sassline: http://sassline.com/
+// by Jake Giltsoff: https://github.com/designbyjake
+// =====================================================
+
+
+// Setting root sizes and base styles.
+html {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    @include rootsize;
+}
+
+// Site-wide base styles.
+body {
+    line-height: 2rem;
+    font-family: unquote(map-get($bodytype, font-family));
+    font-style: normal;
+    font-weight: map-get($bodytype, regular);
+}
+
+// Links.
+a {
+    transition: color .1s, background-color .1s;
+    color: $linkColour;
+    text-decoration: none;
+
+    &:hover, &:active, &:focus {
+        color: $hoverColour;
+        text-decoration: none;
+    }
+}
+
+
+
+%typeset {
+    @if ($debug-baseline == true and $debug-allow == true) {
+        &:before {
+            // Demo baseline grid styles
+            content: "";
+            display: block;
+            pointer-events: none;
+            @include scut-fill;
+            background: linear-gradient(to bottom,rgba(50,50,50, 0.2)0,rgba(50,50,50, 0.2)1px,rgba(255, 255, 255, 0)1px,rgba(255, 255, 255, 0)2px);
+            background-size: 100% 1rem;
+        }
+    }
+
+    // Nice underlines for text links.
+    p a, li a {
+        background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,lighten($linkColour,30%) 50%);
+        background-repeat: repeat-x;
+        background-size: 2px 2px;
+        background-position: 0 90%;
+
+        &:hover, &:active, &:focus {
+            background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,lighten($hoverColour,30%) 50%);
+        }
+    }
+
+    // Paragraphs. OpenType ligatures and oldstyle figures enabled if available.
+    p {
+    font-feature-settings: 'kern' 1, 'onum' 1, 'liga' 1;
+        @include sassline($fontsize: theta, $font: $bodytype, $lineheight: 2, $below: 2, $breakpoint: all);
+    }
+
+    // Headings. OpenType ligatures, discretionary ligatures and lining figures enabled if available.
+
+    h1, h2, h3, h4, h5, h6 {
+        font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
+        color: $headingColour;
+        font-family: unquote(map-get($headingtype, font-family));
+        font-style: normal;
+    }
+
+    h1, h2 {
+        font-weight: map-get($bodytype, bold);
+    }
+
+    h3, h4, h5, h6 {
+        font-weight: map-get($bodytype, normal);
+    }
+
+    // Heading level 1.
+    h1, .alpha {
+        @include sassline($fontsize: alpha, $font: $headingtype, $lineheight: 4, $below: 2, $breakpoint: all);
+    }
+
+    // Heading level 2.
+    h2, .beta {
+        @include sassline(beta, $headingtype, 3, 1, all);
+    }
+
+    // Heading level 3.
+    h3, .gamma {
+        @include sassline(gamma, $headingtype, 3, 1, all);
+    }
+
+    // Heading level 4.
+    h4, .delta {
+        @include sassline(delta, $headingtype, 2, 0, all);
+    }
+
+    // Heading level 5.
+    h5, .epsilon {
+        @include sassline(epsilon, $headingtype, 2, 0, all);
+    }
+
+    // Heading level 6.
+    h6, .zeta {
+        @include sassline(zeta, $headingtype, 2, 0, all);
+    }
+
+    // Lists.
+    ul, ol {
+        @include baseline(eta, $bodytype, 2, 2, all);
+    }
+
+    li {
+        font-feature-settings: 'kern' 1, 'onum' 1, 'liga' 1;
+        margin-left: 2rem;
+
+        @include breakpoint(break-1) {
+            margin-left: 0;
+        }
+    }
+
+    // Bold.
+    b, strong, .bold {
+        font-weight: map-get($bodytype, bold);
+    }
+
+    // Italic.
+    em, i, .italic {
+        font-style: map-get($bodytype, italic);
+    }
+
+    // Caption and inline small text.
+    small, .caption {
+        font-family: unquote(map-get($headingtype, font-family));
+        font-style: normal;
+        font-weight: map-get($headingtype, regular);
+        @include fontsize(theta, all);
+    }
+
+    small {
+        line-height: 1rem;
+    }
+
+    .caption {
+        color: $captionColour;
+        @include baseline(theta, $headingtype, 2, 2, all);
+    }
+
+    // Nice spacing for captions.
+    h1 + .caption, .alpha + .caption, h2 + .caption, .beta + .caption, h3 + .caption, .gamma + .caption {
+        margin-top: -1rem;
+    }
+
+    // Quotes.
+    blockquote {
+
+    p {
+        font-style: map-get($bodytype, italic);
+        padding-left: 1rem;
+        border-left: 0.1rem solid $linkColour;
+
+        // Add spacing below blockquote paragraphs to align to baseline grid.
+        $get-scale: map-get($modular-scale, scale-0);
+        $get-size: map-get($get-scale, zeta);
+        $rootsize: nth($sizes, 1);
+        $baseline-shift: #{($get-size / 2 * ((2 * $rootsize / $get-size) - map-get($bodytype, cap-height))) / $rootsize + 0.00001};
+        $baseline-push: #{3 - (($get-size * ((2 * $rootsize / $get-size) - map-get($bodytype, cap-height))) / $rootsize + 0.00001)};
+
+        margin-bottom: #{$baseline-push}rem;
+        padding-bottom: #{$baseline-shift}rem;
+
+        @for $i from 2 through $breakpoints-limit {
+            $get-scale: map-get($modular-scale, scale-#{$i - 1});
+            $get-size: map-get($get-scale, zeta);
+            $rootsize: nth($sizes, $i);
+            $baseline-shift: #{($get-size / 2 * ((2 * $rootsize / $get-size) - map-get($bodytype, cap-height))) / $rootsize + 0.00001};
+            $baseline-push: #{3 - (($get-size * ((2 * $rootsize / $get-size) - map-get($bodytype, cap-height))) / $rootsize + 0.00001)};
+
+            @media screen and (min-width: nth($points, $i) / 16 * 1em ) {
+                    margin-bottom: #{$baseline-push}rem;
+                    padding-bottom: #{$baseline-shift}rem;
+                }
+            }
+        }
+    }
+
+    // Horizontal rule.
+    hr {
+        background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,darken($backgroundColour,20%) 50%);
+        background-repeat: repeat-x;
+        background-size: 2px 2px;
+        background-position: 0 50%;
+        border: 0;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+        margin: 0;
+    }
+
+    // Code block.
+    code, pre {
+        background-color: $codeBackgroundColour;
+        color: $white;
+        font-family: unquote(map-get($monospacetype, font-family));
+    }
+
+    pre {
+        border-radius: 0.3rem;
+        display: block;
+        white-space: pre;
+        white-space: pre-wrap;
+        word-break: break-all;
+        word-wrap: break-word;
+        margin-bottom: 2rem;
+        padding: 1rem;
+    }
+
+    code {
+        @include fontsize(theta, all);
+        line-height: 1rem;
+    }
+
+    // Letter space those capitals people, Jan Tschichold would be proud.
+    .upper {
+        text-transform: uppercase;
+        letter-spacing: 0.1rem;
+    }
+
+    // Real small caps.
+    .small-caps {
+        font-feature-settings: 'smcp' 1, 'kern' 1;
+        letter-spacing: 0.1rem;
+    }
+
+    // Consistent height numbers with OpenType.
+    .lining-numerals {
+        font-feature-settings: 'lnum' 1, 'kern' 1;
+    }
+
+    // Ascending and descending numbers with OpenType.
+    .oldstyle-numerals {
+        font-feature-settings: 'onum' 1, 'kern' 1;
+    }
+}
