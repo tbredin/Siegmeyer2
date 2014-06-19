@@ -5,22 +5,26 @@ A SMACSS Boilerplate using Susy, Sassline, and Gulp
 
 Comes with susy grids & typographic baseline out of the box
 
-###Install:
+
+### Install
 Node modules:     
-```npm install```
+`npm install`      
 
-Ruby gems:      
-```bundle```
+Ruby gems:         
+`bundle`   
 
-Front end dependancies:     
-```bower update```
 
-###Watch
+Front end dependancies:       
+`bower update`        
 
-Boot up watch server with gulp:     
-```gulp watch``` 
 
-###Roadmap
+### Watch      
+ 
+Boot up watch server with gulp:        
+`gulp watch`    
+
+
+###Roadmap      
 
 - Documetation
 - Cleaner Gulpfile & build setup
