@@ -15,7 +15,7 @@ Ruby gems:
 
 
 Front end dependancies:       
-`bower update`        
+`bower install`        
 
 
 ### Watch      
