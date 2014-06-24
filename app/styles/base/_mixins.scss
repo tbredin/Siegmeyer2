@@ -23,8 +23,9 @@
 // sets containers for all breakpoints, including bridge for sassline & susy incompatability
 @mixin set-container() {
     @include layout(break-val(break-0, layout));
-
-    $break-adjusted: px-to-ems(break-val(break-0, max), 1px * nth($sizes, 1));
+    padding-left: $container-padding;
+    padding-right: $container-padding;
+    $break-adjusted: px-to-ems(break-val(break-0, max) - 2 * $container-padding, 1px * nth($sizes, 1));
     @if $debug-grid == true and $debug-allow == true {
         @include container($break-adjusted show-columns);
     } @else {
@@ -36,7 +37,7 @@
     @each $break in $list {
         @if ($break != break-0) {
             @include breakpoint-layout($break) {
-                $break-adjusted: px-to-ems(break-val($break, max), 1px * nth($sizes, $i));
+                $break-adjusted: px-to-ems(break-val($break, max) - 2 * $container-padding, 1px * nth($sizes, $i));
 
                 @if $debug-grid == true and $debug-allow == true {
                     @include container($break-adjusted show-columns);

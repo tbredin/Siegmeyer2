@@ -35,3 +35,8 @@ img {
         max-width: 100%;
     }
 }
+
+.container {
+    @include set-container;
+    @extend %typeset;
+}

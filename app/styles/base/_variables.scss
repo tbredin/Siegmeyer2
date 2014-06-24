@@ -30,8 +30,9 @@ $base-font-size: 16px;
 
 // responsive grid settings
 // gutters
-$gutter-width: px-to-ems(20px);
-$column-width: px-to-ems(45px);
+$gutter-width: 20px;
+$column-width: 45px;
+$container-padding: 20px;
 
 // column number at each breakpoint
 $break-0-cols: 6;
@@ -100,7 +101,7 @@ $breakpoint-number: length(map-keys($breakpoint-map));
 
 // debug grid columns, baseline grid & breakpoints
 $debug-grid: true;
-$debug-baseline: false;
+$debug-baseline: true;
 $debug-breakpoints: true;
 
 // grid opacity
@@ -131,9 +132,9 @@ $breakpoints: (
 // ! Make sure to have as many sizes as breakpoints above.
 $rootsizes: (
     rootsize-0: 12,   // 24px line-height body text
-    rootsize-1: 14,   // 28px line-height body text
-    rootsize-2: 15,   // 30px line-height body text
-    rootsize-3: 17,   // 34px line-height body text
+    rootsize-1: 13,   // 28px line-height body text
+    rootsize-2: 14,   // 30px line-height body text
+    rootsize-3: 16,   // 34px line-height body text
     rootsize-4: 18    // 36px line-height body text
 );
 
@@ -156,14 +157,14 @@ $bodytype: (
     regular: 100,
     bold: 400,
     italic: italic,
-    cap-height: 0.66
+    cap-height: 0.62
 );
 
 $headingtype: (
-    font-family: 'Georgserif',
+    font-family: 'Georga, serif',
     regular: 400,
     bold: 700,
-    cap-height: 0.48
+    cap-height: 0.6
 );
 
 $monospacetype: (

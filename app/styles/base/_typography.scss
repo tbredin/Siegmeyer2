@@ -39,6 +39,8 @@ a {
 
 
 %typeset {
+    position: relative;
+
     @if ($debug-baseline == true and $debug-allow == true) {
         &:before {
             // Demo baseline grid styles
@@ -119,6 +121,18 @@ a {
     // Lists.
     ul, ol {
         @include baseline(eta, $bodytype, 2, 2, all);
+    }
+
+    ul {
+        padding-left: 1rem;
+
+        li {
+            padding-left: 0.25rem;
+        }
+    }
+
+    ol {
+        padding-left: 1.25rem;
     }
 
     li {
