@@ -1,0 +1,13 @@
+// example module syntax
+.example-name {
+    //styles
+
+    &__submodule-name {
+        // styles
+    }
+
+    &_has-modifier-description,
+    &_has-key_value {
+        // styles
+    }
+}

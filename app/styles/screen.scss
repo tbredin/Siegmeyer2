@@ -15,12 +15,17 @@ $debug-allow: true;
 // import site base
 @import "base/reset";
 @import "base/variables";
+@import "base/webfonts";
 @import "base/mixins";
-@import "base/modular-scale";
 
-// Siegmeyer 2 typography defaults
+// Siegmeyer 2 new typography defaults
 @import "base/typography";
+@import "base/globals";
 
-// Import all SCSS modules
-@import "modules/globals";
+// Import all modules
+@import "modules/example";
 
+
+
+// Import all states
+// @import "states/state__name";

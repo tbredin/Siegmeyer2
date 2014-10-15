@@ -23,6 +23,15 @@
 // Converts an em value to px. Should only work in absolute em document context (root level)
 @function em-to-px($value) {
     @if unit($value) == "em" {
+        $value : no-unit($value) * no-unit($current-root);
+        $value : $value * 1px;
+    }
+    @return $value;
+}
+
+// Converts an rem value to px. Should only work in absolute em document context (root level)
+@function rem-to-px($value) {
+    @if unit($value) == "rem" {
         $value : no-unit($value) * no-unit($base-font-size);
         $value : $value * 1px;
     }
@@ -46,7 +55,7 @@
 // Converts a px value to ems. Should only work in absolute em document context (root level), unless $context is specified
 @function px-to-rems($value, $context: $base-font-size) {
     @if unit($context) == "rem" {
-        $context: em-to-px($context);
+        $context: rem-to-px($context);
     }
     @if unit($value) == "px" {
         $value : no-unit($value) / no-unit($context);

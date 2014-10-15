@@ -76,15 +76,15 @@
 
     h1, h2, th {
         text-transform: uppercase;
-        font-family: map-get($headingtype, font-family);
+        font-family: map-get($display-type, font-family);
     }
 
     h2, h3 {
-        color: $headingColour;
+        color: #000;
     }
 
     dt {
-        color: $headingColor;
+        color: #000;
         font-weight: bold;
     }
 
@@ -100,7 +100,7 @@
 
     a:link, a:visited {
         background: transparent;
-        color: $linkColour;
+        color: blue;
         text-shadow: none;
         text-decoration: underline;
     }
