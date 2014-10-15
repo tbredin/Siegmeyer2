@@ -1,7 +1,7 @@
 Siegmeyer2
 ==========
 
-A SMACSS Boilerplate using Susy, Sassline, and Gulp
+A SMACSS Static Boilerplate using Susy and Gulp
 
 Comes with susy grids & typographic baseline out of the box
 
