@@ -42,6 +42,8 @@ gulp.task('scripts', function () {
 });
 
 // generate assets and compile html from partials
+// Note: useref needs paths relative to the given searchPath option (below) - NOT the partials themselves.
+//       As .tmp is populated first, this path will usually just be /scripts or /styles
 gulp.task('html', ['styles', 'scripts'], function () {
     var jsFilter = $.filter('**/*.js');
     var cssFilter = $.filter('**/*.css');
