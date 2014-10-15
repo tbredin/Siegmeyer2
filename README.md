@@ -27,5 +27,5 @@ Boot up watch server with gulp:
 ###Roadmap      
 
 - Nicer HTML page / defaults
-- Documetation
+- Grid/ Baseline Documetation
 - Cleaner Gulpfile & build setup
