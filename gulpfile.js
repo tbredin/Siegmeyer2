@@ -13,7 +13,7 @@ var watching = false;
 
 // handle (mostly sass) errors
 function handleError(err) {
-  console.log(err.toString());
+    console.log(err.toString());
     if (watching) {
         this.emit('end');
     }
@@ -37,7 +37,7 @@ gulp.task('styles', function () {
 gulp.task('scripts', function () {
     return gulp.src('app/scripts/**/*.js')
         .pipe($.jshint())
-        .pipe($.jshint.reporter(require('jshint-stylish')))
+        .pipe($.jshint.reporter('jshint-stylish'))
         .pipe($.size());
 });
 
@@ -63,11 +63,11 @@ gulp.task('html', ['styles', 'scripts'], function () {
 // minify images, including svg
 gulp.task('images', ['svg'], function () {
     return gulp.src('app/images/**/*')
-        .pipe($.cache($.imagemin({
+        .pipe($.imagemin({
             optimizationLevel: 3,
             progressive: true,
             interlaced: true
-        })))
+        }))
         .pipe(gulp.dest('.tmp/images'))
         .pipe($.size());
 });
@@ -75,7 +75,6 @@ gulp.task('images', ['svg'], function () {
 // minify svg & generate png fallbacks
 gulp.task('svg', function () {
     gulp.src('app/images/**/*.svg')
-
         .pipe(svg2png())
         .pipe(gulp.dest('.tmp/images'))
         .pipe($.size());
@@ -83,8 +82,7 @@ gulp.task('svg', function () {
 
 // copy fonts
 gulp.task('fonts', function () {
-    return $.bowerFiles()
-        .pipe($.filter('app/webfonts/*.{eot,svg,ttf,woff}'))
+    return gulp.src('app/webfonts/*.{eot,svg,ttf,woff}')
         .pipe($.flatten())
         .pipe(gulp.dest('.tmp/webfonts'))
         .pipe($.size());
