@@ -5,7 +5,7 @@ A SMACSS Static Boilerplate using Susy and Gulp
 
 Comes with susy grids & typographic baseline out of the box
 
-Automatically inlines small css assets and critical-path css
+Automatically base64 encodes small css assets and inlines critical-path css
 
 ### Install
 Node modules:     
