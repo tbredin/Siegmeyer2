@@ -5,7 +5,7 @@ var fileinclude = require('gulp-file-include');
 var gulpif = require('gulp-if');
 var svg2png = require('gulp-svg2png');
 var critical = require('critical');
-
+var inlineBase64 = require('gulp-inline-base64');
 // load gulp-* plugins
 var $ = require('gulp-load-plugins')();
 
@@ -29,6 +29,11 @@ gulp.task('styles', function () {
             require: 'susy',
         }))
         .on("error", handleError)
+        .pipe(inlineBase64({
+            baseDir: 'app/styles/',
+            maxSize: 14 * 1024,
+            debug: true
+        }))
         .pipe($.autoprefixer('last 2 version', '> 5%', 'ie 8', 'ie 9'))
         .pipe(gulp.dest('.tmp/styles'))
         .pipe($.size());
@@ -181,7 +186,7 @@ gulp.task('watch', ['html', 'connect', 'serve'], function () {
         '.tmp/*.html',
         '.tmp/styles/**/*.css',
         '.tmp/scripts/**/*.js',
-        'app/images/**/*'
+        '.tmp/images/**/*'
     ]).on('change', function (file) {
         server.changed(file.path);
     });
