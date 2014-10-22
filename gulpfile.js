@@ -4,8 +4,9 @@ var gulp = require('gulp');
 var fileinclude = require('gulp-file-include');
 var gulpif = require('gulp-if');
 var svg2png = require('gulp-svg2png');
+var critical = require('critical');
 
-// load plugins
+// load gulp-* plugins
 var $ = require('gulp-load-plugins')();
 
 //not watching
@@ -94,6 +95,17 @@ gulp.task('extras', function () {
         .pipe(gulp.dest('.tmp'));
 });
 
+gulp.task('critical', ['tidy', 'clone'], function (cb) {
+    critical.generateInline({
+        base: 'dist/',
+        src: 'index.html',
+        htmlTarget: 'index.html',
+        width: 320,
+        height: 480,
+        minify: true
+    },cb);
+});
+
 // clean out built files
 gulp.task('clean', function () {
     return gulp.src(['.tmp', 'dist'], { read: false }).pipe($.clean());
@@ -101,7 +113,7 @@ gulp.task('clean', function () {
 
 // build dist
 gulp.task('build', ['html', 'images', 'fonts', 'extras'], function () {
-    gulp.start('clone');
+    gulp.start('critical');
 });
 
 // minify where appropriate & output all generated files from .tmp to dist
