@@ -5,10 +5,11 @@ Siegmeyer2 is a static SMACSS boilerplate using Susy grids, Siegmeyer typographi
 
 
 ### Install
-####Yeoman
+
+#####Yeoman
 A yeoman generator is available [here](https://github.com/tbredin/generator-siegmeyer2)
 
-####Manual install:
+#####Manual install
 
 Node modules:     
 `npm install`      
@@ -22,7 +23,7 @@ Front end dependancies:
 
 
 ### Watch      
- 
+
 Boot up watch server with gulp:        
 `gulp watch`    
 
