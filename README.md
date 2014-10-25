@@ -1,13 +1,15 @@
 Siegmeyer2
 ==========
 
-A SMACSS Static Boilerplate using Susy and Gulp
+Siegmeyer2 is a static SMACSS boilerplate using Susy grids, Siegmeyer typographic rhythm, and Gulp
 
-Comes with susy grids & typographic baseline out of the box
-
-Automatically base64 encodes small css assets and inlines critical-path css
 
 ### Install
+####Yeoman
+A yeoman generator is available [here](https://github.com/tbredin/generator-siegmeyer2)
+
+####Manual install:
+
 Node modules:     
 `npm install`      
 
