@@ -10,6 +10,7 @@ Siegmeyer2 is a static SMACSS boilerplate using Susy grids, Siegmeyer typographi
 #####Yeoman generator
 A yeoman generator is available [here](https://github.com/tbredin/generator-siegmeyer2)
 
+
 #####Manual install
 
 Node modules:     
@@ -27,6 +28,14 @@ Front end dependancies:
 
 Boot up watch server with gulp:        
 `gulp watch`    
+
+
+
+### Production
+
+Build into `dist` directory with gulp:    
+`gulp build`     
+CSS, JS, and images will be concatenated & minified, PNG fallbacks for SVGs will be generated, critical path CSS will be inlined, and small images (<14kb) will be base64 encoded. 
 
 
 
