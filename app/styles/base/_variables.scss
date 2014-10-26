@@ -31,11 +31,14 @@ $site-color-names: map-keys($site-colors);
 // debug grids
 $debug-color: tomato;
 
+//interior gutters
+$gutter: 1.25rem;
+
 // susy settings
 $susy: (
     global-box-sizing: content-box,
     math: fluid,
-    container-position: 0,
+    container-position: 5%,
     debug: (
         color: transparentize($debug-color,0.6)
     ),
@@ -69,9 +72,6 @@ $break-2-max: 100%;
 $break-0-layout: $break-0-cols ($column-width 0px);
 $break-1-layout: $break-1-cols ($column-width 0px);
 $break-2-layout: $break-2-cols ($column-width 0px);
-
-//interior gutters
-$gutter: 1.25rem;
 
 // Root font-sizes for each breakpoint. Set to half desired line-height of body text.
 $rootsizes: (
