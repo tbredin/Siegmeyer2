@@ -291,86 +291,59 @@
 }
 
 
+
 // Set fontsize and baseline at once
-@mixin type($font, $fontsize, $lineheight: 2, $leader: 0, $trailer: 0) {
+@mixin type($font, $fontsize, $lineheight: 2, $leader: 0, $trailer: 0, $scale-ratio: 1) {
     $font-value: type-of($fontsize);
     $cap-height: map-get($font, cap-height);
     $context: index($breaks, $current-breakpoint) + 1;
     $font-calc: $fontsize * nth($sizes, $context);
+    $font-unit: unit($fontsize);
 
     //set line height if different to default
     @if $lineheight != 2 {
-        line-height: $lineheight * 1rem;
+        line-height: round($lineheight) * 1rem;
     }
 
-    @if $font-value == number {
+    @if $font-value == number or $font-unit != rem {
         font-size: $fontsize;
 
         $baseline-shift: ($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + $leader + 0.00001;
         $baseline-push: $trailer - (($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
         padding-top: $baseline-shift * 1rem;
-        margin-bottom: $baseline-push * 1rem;
+        padding-bottom: $baseline-push * 1rem;
 
-    } @else {
-        @warn "#{$fontsize} is not a valid font size. Please use rems";
-    }
-}
+        @if $scale-ratio != 1 and $scale-ratio > 1 {
+            $multiplier: 1;
+            @if $current-breakpoint == break-0 {
+                @each $breakpoint in $breaks {
+                    @if $breakpoint != break-0 {
 
-// Set fontsize
-@mixin type-size($fontsize) {
-    $font-value: type-of($fontsize);
+                        @include breakpoint-layout($breakpoint) {
+                            $increment: ($scale-ratio - 1) / ($breakpoint-count - 1);
+                            $multiplier: $multiplier + $increment;
 
-    @if $font-value == number {
-        font-size: $fontsize;
-    } @else {
-        @warn "#{$fontsize} is not a valid font size";
-    }
-}
+                            $line-height-calc: round($lineheight * $multiplier);
+                            $context: index($breaks, $current-breakpoint);
+                            $font-calc: $fontsize * nth($sizes, $context) * $multiplier;
 
-@mixin type-leading($lineheight) {
-    @if $lineheight != 2 {
-        line-height: $lineheight * 1rem;
-    }
-}
-
-// set type leaders
-@mixin type-leader($font, $fontsize, $lineheight: 2, $leader: 0, $pad: true) {
-    $font-value: type-of($fontsize);
-    $cap-height: map-get($font, cap-height);
-    $context: index($breaks, $current-breakpoint) + 1;
-    $font-calc: $fontsize * nth($sizes, $context);
-
-    @if $font-value == number {
-        $baseline-shift: ($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + $leader + 0.00001;
-        @if ($pad == true) {
-            padding-top: $baseline-shift * 1rem;
-        } @else {
-            margin-top: $baseline-shift * 1rem;
+                            line-height: $line-height-calc * 1rem;
+                            font-size: $fontsize * $multiplier;
+                            $baseline-shift: ($font-calc / 2 * (($line-height-calc * $current-root / $font-calc) - $cap-height)) / $current-root + $leader + 0.00001;
+                            $baseline-push: $trailer - (($font-calc / 2 * (($line-height-calc * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
+                            padding-top: $baseline-shift * 1rem;
+                            padding-bottom: $baseline-push * 1rem;
+                        }
+                    }
+                }
+            } @else {
+                @warn "ERROR: scale-ratio must be used from root context, not within media queries";
+            }
         }
-
     } @else {
         @warn "#{$fontsize} is not a valid font size. Please use rems";
     }
-}
 
-// set type trailer
-@mixin type-trailer($font, $fontsize, $lineheight: 2, $trailer: 0, $pad: false) {
-    $font-value: type-of($fontsize);
-    $cap-height: map-get($font, cap-height);
-    $context: index($breaks, $current-breakpoint) + 1;
-    $font-calc: $fontsize * nth($sizes, $context);
-
-    @if $font-value == number {
-        $baseline-push: $trailer - (($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
-        @if ($pad == true) {
-            padding-bottom: $baseline-push * 1rem;
-        } @else {
-            margin-bottom: $baseline-push * 1rem;
-        }
-
-    } @else {
-        @warn "#{$fontsize} is not a valid font size. Please use rems";
-    }
 }
 
 @mixin type-match {

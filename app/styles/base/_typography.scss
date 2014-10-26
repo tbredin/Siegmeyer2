@@ -25,7 +25,7 @@ body {
     position: relative;
 
     @if ($debug-baseline == true and $debug-allow == true) {
-        &:before {
+        &:after {
             // Demo baseline grid styles
             content: "";
             display: block;
@@ -61,7 +61,7 @@ p, li {
     text-align: left;
     color: site-color(steel);
     -webkit-font-smoothing: antialiased;
-    @include type($body-type, 1.25rem, 2, 2, 2);
+    @include type($body-type, 1.25rem, 2, 0, 1);
 }
 
 // Headings. OpenType ligatures, discretionary ligatures and lining figures enabled if available.
@@ -82,13 +82,12 @@ h1, h2, h3, h4, h5, h6 {
 
 // Heading level 1.
 h1 {
-    text-align: center;
-    @include type($font: $body-type, $fontsize: 5rem, $lineheight: 6, $leader: 1, $trailer: 2);
+    @include type($font: $body-type, $fontsize: 3.75rem, $lineheight: 4, $leader: 1, $trailer: 3, $scale-ratio: 1.5);
 }
 
 // Heading level 2.
 h2 {
-    @include type($body-type, 2.375rem, 3, 1, 1);
+    @include type($body-type, 2.2rem, 3, 1, 1, 1.35);
 }
 
 // Heading level 3.
