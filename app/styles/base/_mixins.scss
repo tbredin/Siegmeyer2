@@ -48,35 +48,37 @@
 }
 
 
-// wrapper for combining breakpoint mixin and susy 'with layout' mixin. Also gives breakpoint info to
+// wrapper for combining breakpoint mixin and susy 'with layout' mixin. Also exposes current breakpoint to content via $current-breakpoint/root variables
 @mixin breakpoint-layout($match-breakpoint) {
-    // make current breakpoint context available in global scope
-    $current-breakpoint: $match-breakpoint !global;
-    $current-root: break-get($match-breakpoint, size) !global;
+    @if map-has-key($breakpoint-map, $match-breakpoint) {
+        // make current breakpoint context available in global scope
+        $current-breakpoint: $match-breakpoint !global;
+        $current-root: break-get($match-breakpoint, size) !global;
 
-    @include breakpoint($match-breakpoint) {
-        @include with-layout(break-get($match-breakpoint, layout)) {
-            @content;
+        @include breakpoint($match-breakpoint) {
+            @include with-layout(break-get($match-breakpoint, layout)) {
+                @content;
+            }
         }
+
+        // reset current breakpoint context
+        $current-breakpoint: break-0 !global;
+        $current-root: break-get(break-0, size) !global;
+    } @else {
+        @warn "#{$match-breakpoint} is not a set breakpoint variable";
     }
-
-    // reset current breakpoint context
-    $current-breakpoint: break-0 !global;
-    $current-root: break-get(break-0, size) !global;
 }
-
 
 // shorthand function to retreive breakpoint values
 @function break-get($break, $val) {
     @return map-get(map-get($breakpoint-map, $break), $val);
 }
 
-
 // sets containers for all breakpoints. It is important to use this to avoid incorrect breakpoint values due to type scaling
 @mixin set-container {
     @extend %container;
 }
-
+// extend helper for cleaner markup
 %container {
     @include layout(break-get(break-0, layout));
 
@@ -117,8 +119,8 @@
             box-sizing: border-box;
             bottom: 0;
             animation-fill-mode: both;
-            height: 2rem;
-            line-height: 2rem;
+            @include rem(height, 2rem);
+            @include rem(line-height, 2rem);
         }
 
         &:before {
@@ -126,10 +128,10 @@
             background-color: $debug-color;
             background-color: transparentize($debug-color, 0.15);
             color: #fff;
-            font-size: 0.875rem;
+            @include rem(font-size, 0.875rem);
             z-index: 10000;
             // @include fontsize(iota, all);
-            padding: 0 2rem;
+            @include rem(padding, 0 2rem);
             border: 1px solid lighten($debug-color, 10%);
             text-shadow: 0 -1px 0 darken($debug-color, 25%);
             width: 100%;
@@ -148,7 +150,7 @@
             z-index: 10001;
             left: 50%;
             transform: translateX(-50%);
-            padding: 0.25rem 0 0;
+            @include rem(padding, 0.25rem 0 0);
             animation: breakpoint-marker-in 1s ease-out;
 
             @include breakpoint(break-1) {
@@ -237,7 +239,6 @@
     height: 100%;
 }
 
-
 // svg background image with png fallbacks
 @mixin svg-bg($name, $size: false, $hires: false){
     background-image: url(#{$image-path}/#{$name}.svg);
@@ -280,38 +281,70 @@
 
 // Root font-size in %, outputted in correct breakpoints.
 @mixin rootsize {
-    font-size: nth($sizes, 1) / 16 * 100%;
+    $max-size: nth($sizes, $breakpoint-count) / 16 * 100;
+
+    $size: nth($sizes, 1) / 16 * 100;
+    font-size: $size * 1%;
+
+    @if $fluid-type == true {
+        $fluid: 1 + (0.05 * ($max-size - $size) * 1);
+        font-size: 1vw * $fluid;
+
+        @media screen and (max-width: #{nth($sizes, 1) / $fluid * 100}px) {
+            font-size: $size * 1%;
+        }
+    }
 
     // Loop through breakpoints.
     @for $i from 2 through $breakpoint-count {
         @media screen and (min-width: break-get(nth($breaks, $i), start) / 16px * 1em ) {
-            font-size: nth($sizes, $i) / 16 * 100%;
+            $size: nth($sizes, $i) / 16 * 100;
+            font-size: $size * 1%;
+
+            @if $fluid-type == true {
+                $fluid: 1 + (0.05 * ($max-size - $size) * 1);
+                font-size: 1vw * $fluid;
+
+                @media screen and (max-width: #{nth($sizes, $i) / $fluid * 100}px) {
+                    font-size: $size * 1%;
+                }
+            }
         }
     }
 }
-
 
 
 // Set fontsize and baseline at once
 @mixin type($font, $fontsize, $lineheight: 2, $leader: 0, $trailer: 0, $scale-ratio: 1) {
     $font-value: type-of($fontsize);
     $cap-height: map-get($font, cap-height);
-    $context: index($breaks, $current-breakpoint) + 1;
+    $context: index($breaks, $current-breakpoint);
     $font-calc: $fontsize * nth($sizes, $context);
     $font-unit: unit($fontsize);
 
     //set line height if different to default
-    @if $lineheight != 2 {
-        line-height: round($lineheight) * 1rem;
-    }
+
+    @include rem(line-height, $lineheight * 1rem);
+
+    @include leader($leader);
+    @include trailer($trailer);
 
     @if $font-value == number or $font-unit != rem {
-        font-size: $fontsize;
+        @include rem(font-size, $fontsize);
 
-        $baseline-shift: ($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + $leader + 0.00001;
-        $baseline-push: $trailer - (($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
-        padding-top: $baseline-shift * 1rem;
-        padding-bottom: $baseline-push * 1rem;
+        $baseline-shift: ($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + + 0.00001;
+        $baseline-push: 0 - (($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
+
+        @if $baseline-shift < 0 {
+            @include rem(margin-top, $baseline-shift * 1rem);
+        } @else {
+            @include rem(padding-top, $baseline-shift * 1rem);
+        }
+        @if $baseline-push < 0 {
+            @include rem(margin-bottom, $baseline-push * 1rem);
+        } @else {
+            @include rem(padding-bottom, $baseline-push * 1rem);
+        }
 
         @if $scale-ratio != 1 and $scale-ratio > 1 {
             $multiplier: 1;
@@ -327,12 +360,21 @@
                             $context: index($breaks, $current-breakpoint);
                             $font-calc: $fontsize * nth($sizes, $context) * $multiplier;
 
-                            line-height: $line-height-calc * 1rem;
-                            font-size: $fontsize * $multiplier;
-                            $baseline-shift: ($font-calc / 2 * (($line-height-calc * $current-root / $font-calc) - $cap-height)) / $current-root + $leader + 0.00001;
-                            $baseline-push: $trailer - (($font-calc / 2 * (($line-height-calc * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
-                            padding-top: $baseline-shift * 1rem;
-                            padding-bottom: $baseline-push * 1rem;
+                            @include rem(line-height, $line-height-calc * 1rem);
+                            @include rem(font-size, $fontsize * $multiplier);
+                            $baseline-shift: ($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + + 0.00001;
+                            $baseline-push: 0 - (($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
+
+                            @if $baseline-shift < 0 {
+                                @include rem(margin-top, $baseline-shift * 1rem);
+                            } @else {
+                                @include rem(padding-top, $baseline-shift * 1rem);
+                            }
+                            @if $baseline-push < 0 {
+                                @include rem(margin-bottom, $baseline-push * 1rem);
+                            } @else {
+                                @include rem(padding-bottom, $baseline-push * 1rem);
+                            }
                         }
                     }
                 }
@@ -343,44 +385,29 @@
     } @else {
         @warn "#{$fontsize} is not a valid font size. Please use rems";
     }
+}
 
+@mixin leader($units) {
+    @if ($units > 0) {
+        @include rem(border-top, $units * 1rem solid transparent);
+    } @else {
+        border-top: 0 none;
+    }
+}
+
+@mixin trailer($units) {
+    @if ($units > 0) {
+        @include rem(border-bottom, $units * 1rem solid transparent);
+    } @else {
+        border-bottom: 0 none;
+    }
 }
 
 @mixin type-match {
     line-height: 0;
 }
 
-// Thick Content Mixins
-@mixin button($colour: #fff, $hover: site-color(steel), $height: 3) {
-    border-width: 1px;
-    border-style: solid;
-    padding: 0 1.5em;
-    height: $height * 1rem;
-    line-height: $height * 1rem * 0.9;
-    @include type-size(18rem / 16);
-    font-family: font-family-of($display-type);
-    display: inline-block;
-    background-color: transparent;
-    background-image: none;
-    box-sizing: border-box;
-    margin: $height * 1rem / 6 1rem $height * 1rem / 6 0;
-    @include button-paint($colour, $hover);
-
-    &:hover {
-        background-image: none;
-    }
-}
-
-@mixin button-paint($colour, $hover: $colour) {
-    color: $colour;
-    border-color: $colour;
-
-    &:hover {
-        background-color: $colour;
-        color: $hover;
-    }
-}
-
+//draws a nicer text decoration
 @mixin text-link($colour: #fff, $hover: $colour) {
     font-family: font-family-of($display-type);
     -webkit-font-smoothing: antialiased;
@@ -397,75 +424,43 @@
     }
 }
 
-@mixin draw-arrow($color: #fff, $dir: bottom, $length: 5rem, $stem-width: 22%, $arrow-size: 1em) {
-    $stem-start: 50% - $stem-width / 2;
-    $stem-end: 50% + $stem-width / 2;
+// returns a number without a unit
+@function parseInt($n) {
+    @return $n / ($n * 0 + 1);
+}
 
-    display: block;
-    text-indent: -999em;
-    margin: 0 auto;
-    position: relative;
-    transform: translateZ(0);
+// generate legacy fallbacks for rem units
+@mixin rem($property, $values) {
+    $px : ();
+    $rem: ();
+    $context: index($breaks, $current-breakpoint);
+    $base: nth($sizes, $context);
 
-    @if $dir == top or $dir == bottom {
-        height: $length;
-        transition: height 0.4s ease !important;
-        width: $arrow-size;
-        background: linear-gradient(to left, transparent 0%, transparent $stem-start, $color $stem-start, $color $stem-end, transparent $stem-end, transparent 100%)!important;
-        background-size: 100% 2px!important;
-        background-repeat: repeat-y!important;
+    @each $value in $values {
+        @if type-of($value) == number {
+            $unit: unit($value);
+            $val: parseInt($value);
+
+            @if $unit == "rem" {
+                $px : append($px,  ($val * $base + px));
+                $rem: append($rem, $value);
+            } @else {
+                $px : append($px,  $value);
+                $rem: append($rem, $value);
+            }
+        } @else {
+            $px : append($px , $value);
+            $rem: append($rem, $value);
+        }
+    }
+
+    @if $px == $rem {
+        #{$property}: $px;
     } @else {
-        width: $length;
-        transition: width 0.4s ease !important;
-        height: $arrow-size;
-        background: linear-gradient(to bottom, transparent 0%, transparent $stem-start, $color $stem-start, $color $stem-end, transparent $stem-end, transparent 100%)!important;
-        background-size: 2px 100%!important;
-        background-repeat: repeat-x!important;
-    }
+        #{$property}: $px;
 
-    &:before {
-        content: "";
-        position: absolute;
-
-        // construct triangle
-        // setup
-        border-width: $arrow-size / 2;
-        border-style: solid;
-        border-color: transparent;
-
-        @if $dir == top or $dir == bottom {
-            left: 50%;
-            transform: translateX(-50%);
-        } @else {
-            top: 0;
-            transform: translateY(-50%);
-        }
-
-        // set triangle direction
-        @if $dir == bottom {
-            top: 100%;
-            border-top-color: $color;
-            border-bottom-width: 0;
-        } @else if $dir == top {
-            bottom: 100%;
-            border-top-color: $color;
-            border-bottom-width: 0;
-        } @else if $dir == right {
-            right: 100%;
-            border-right-color: $color;
-            border-left-width: 0;
-        } @else if $dir == left {
-            left: 100%;
-            border-left-color: $color;
-            border-right-width: 0;
-        }
-    }
-
-    &:hover {
-        @if $dir == top or $dir == bottom {
-            height: $length * 1.2;
-        } @else {
-            width: $length * 1.2;
+        @if $parse-rem == true {
+            #{$property}: $rem;
         }
     }
 }

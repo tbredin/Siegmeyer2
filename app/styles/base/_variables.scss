@@ -55,29 +55,38 @@ $column-width: 50px; // needs work - this doesn't represnt anything real
 
 // column number at each breakpoint
 $break-0-cols: 4;
-$break-1-cols: 8;
-$break-2-cols: 12;
+$break-1-cols: 6;
+$break-2-cols: 8;
+$break-3-cols: 12;
 
 // breakpoint position - where the breakpoint starts
 $break-0-width: 0px;
-$break-1-width: 767px;
-$break-2-width: 1280px;
+$break-1-width: 480px;
+$break-2-width: 767px;
+$break-3-width: 1080px;
 
 // max width of grid container
 $break-0-max: 100%;
 $break-1-max: 100%;
 $break-2-max: 100%;
+$break-3-max: 100%;
 
 // susy breakpoint layouts
 $break-0-layout: $break-0-cols ($column-width 0px);
 $break-1-layout: $break-1-cols ($column-width 0px);
 $break-2-layout: $break-2-cols ($column-width 0px);
+$break-3-layout: $break-3-cols ($column-width 0px);
+
+// enable responsive baseline & type scaling.
+// increases root font size from each breakpoint, starting from the min size specified in $rootsizes below
+$fluid-type: true;
 
 // Root font-sizes for each breakpoint. Set to half desired line-height of body text.
 $rootsizes: (
     break-0: 13,   // 26px line-height body text
-    break-1: 15,   // 30px line-height body text
-    break-2: 17,   // 34px line-height body text
+    break-1: 14,   // 30px line-height body text
+    break-2: 15,   // 34px line-height body text
+    break-3: 17,   // 34px line-height body text
 );
 
 // map for flexible retrieval of breakpoint info
@@ -102,6 +111,13 @@ $breakpoint-map: (
         max:        $break-2-max,
         layout:     $break-2-layout,
         size:       map-get($rootsizes, break-2)
+    ),
+    break-3: (
+        cols:       $break-3-cols,
+        start:      $break-3-width,
+        max:        $break-3-max,
+        layout:     $break-3-layout,
+        size:       map-get($rootsizes, break-3)
     ),
 );
 
@@ -134,18 +150,18 @@ $retina-suffix: '@2x';
 // Add weight and style details too.
 // Set cap height to set to the baseline.
 $body-type: (
-    font-family: '"Source Sans", Helvetica, sans-serif',
+    font-family: 'Helvetica, sans-serif',
     regular: 100,
     bold: 400,
     italic: italic,
-    cap-height: 0.62
+    cap-height: 0.65
 );
 
 $display-type: (
     font-family: 'Georga, serif',
     regular: 400,
     bold: 700,
-    cap-height: 0.65
+    cap-height: 0.66
 );
 
 $monospace-type: (
@@ -154,7 +170,9 @@ $monospace-type: (
     cap-height: 0.68
 );
 
-
 // Here are some cap-height sizes to get you started:
 // Georgia: 0.66, Times / Times New Roman: 0.65, Palatino: 0.52
 // Lucida Grande: 0.72, Helvetica: 0.65, Verdana: 0.76, Tahoma: 0.76
+
+// for debugging rem fallback; prevents rem from being output, exposing px fallbacks
+$parse-rem: true;

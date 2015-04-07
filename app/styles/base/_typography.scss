@@ -15,7 +15,7 @@ html {
 
 // Site-wide base styles.
 body {
-    line-height: 2rem;
+    @include rem(line-height, 2rem);
     font-family: font-family-of($body-type);
     font-style: normal;
     font-weight: regular-of($body-type);
@@ -36,7 +36,7 @@ body {
             left: 0;
             right: 0;
             background: linear-gradient(to bottom,rgba(50,50,50, 0.2)0,rgba(50,50,50, 0.2)1px,rgba(255, 255, 255, 0.3)1px,rgba(255, 255, 255, 0)2px, rgba(50,50,50, 0.0)1rem, rgba(50,50,50, 0.1)1rem,rgba(50,50,50, 0.1)1.05rem,rgba(255, 255, 255, 0.1)1.05rem,rgba(255, 255, 255, 0)1.125rem);
-            background-size: 100% 2rem;
+            @include rem(background-size, 100% 2rem);
             z-index: 1000;
         }
     }
@@ -68,9 +68,9 @@ p, li {
 h1, h2, h3, h4, h5, h6 {
     font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
     color: #fff;
-    font-family: font-family-of($body-type);
+    font-family: font-family-of($display-type);
     -webkit-font-smoothing: antialiased;
-    font-style: regular-of($body-type);
+    font-weight: regular-of($display-type);
     margin-left: auto;
     margin-right: auto;
 
@@ -82,62 +82,55 @@ h1, h2, h3, h4, h5, h6 {
 
 // Heading level 1.
 h1 {
-    @include type($font: $body-type, $fontsize: 3.75rem, $lineheight: 4, $leader: 1, $trailer: 3, $scale-ratio: 1.5);
+    @include type($font: $display-type, $fontsize: 3.75rem, $lineheight: 4, $leader: 1, $trailer: 3, $scale-ratio: 1.5);
 }
 
 // Heading level 2.
 h2 {
-    @include type($body-type, 2.2rem, 3, 1, 1, 1.35);
+    @include type($display-type, 2.2rem, 3, 1, 1, 1.35);
 }
 
 // Heading level 3.
 h3 {
-    font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
-    font-family: font-family-of($body-type);
-    -webkit-font-smoothing: antialiased;
-    font-style: normal;
-    @include type($body-type, 2rem, 3, 2, 1);
+    @include type($display-type, 2rem, 3, 1, 1);
 }
 
 // Heading level 4.
 h4 {
-    @include type($body-type, 1.75rem, 3, 2, 1);
+    @include type($display-type, 1.75rem, 2, 1, 1);
 }
 
 // Heading level 5.
 h5 {
-    @include type($body-type, 1.5rem, 3, 2, 1);
+    @include type($display-type, 1.5rem, 2, 1, 1);
 }
 
 // Heading level 6.
 h6 {
-    @include type($body-type, 1.3rem, 3, 2, 1);
+    @include type($display-type, 1.3rem, 2, 1, 1);
 }
 
 // Lists.
 ul, ol {
-    // @include baseline(eta, $bodytype, 2, 2);
+    @include rem(padding-left, 1.75rem);
 }
 
 ul {
     list-style: disc outside;
 
+    @include rem(padding-left, 1.5rem);
+
     li {
-        padding-left: 0.25rem;
+        @include rem(padding-left, 0.25rem);
     }
 }
 
 ol {
-    padding-left: 1.25rem;
+    list-style: decimal outside;
 }
 
 li {
     font-feature-settings: 'kern' 1, 'onum' 1, 'liga' 1;
-    margin-left: 1.5rem;
-
-    // @include breakpoint(break-1) {
-    //     margin-left: 0;
-    // }
 }
 
 // Bold.
@@ -161,7 +154,7 @@ small, .caption {
 }
 
 small {
-    line-height: 1rem;
+    @include rem(line-height, 1rem);
 }
 
 .caption {
@@ -169,18 +162,13 @@ small {
     // @include baseline(12, $headingtype, 2, 2);
 }
 
-// Nice spacing for captions.
-h1 + .caption, h2 + .caption, h3 + .caption {
-    margin-top: -1rem;
-}
-
 // Quotes.
 blockquote {
 
     p {
         font-style: italic-of($body-type);
-        padding-left: 1rem;
-        border-left: 0.1rem solid site-color(steel);
+        @include rem(padding-left, 1rem);
+        @include rem(border-left, 0.1rem solid site-color(steel));
         color: site-color(steel);
         @include type($display-type, 1.5rem, 2, 2, 2);
 
@@ -214,8 +202,8 @@ hr {
     background-size: 2px 2px;
     background-position: 0 50%;
     border: 0;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    @include rem(padding-top, 1rem);
+    @include rem(padding-bottom, 1rem);
     margin: 0;
 }
 
@@ -227,31 +215,31 @@ code, pre {
 }
 
 pre {
-    border-radius: 0.3rem;
+    @include rem(border-radius, 0.3rem);
     display: block;
     white-space: pre;
     white-space: pre-wrap;
     word-break: break-all;
     word-wrap: break-word;
-    margin-bottom: 2rem;
-    padding: 1rem;
+    @include rem(margin-bottom, 2rem);
+    @include rem(padding, 1rem);
 }
 
 code {
     // @include fontsize(12);
-    line-height: 1rem;
+    @include rem(line-height, 1rem);
 }
 
 // Letter space those capitals people, Jan Tschichold would be proud.
 .upper {
     text-transform: uppercase;
-    letter-spacing: 0.1rem;
+    @include rem(letter-spacing, 0.1rem);
 }
 
 // Real small caps.
 .small-caps {
     font-feature-settings: 'smcp' 1, 'kern' 1;
-    letter-spacing: 0.1rem;
+    @include rem(letter-spacing, 0.1rem);
 }
 
 // Consistent height numbers with OpenType.
