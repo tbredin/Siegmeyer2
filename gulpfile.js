@@ -39,11 +39,35 @@ gulp.task('styles', function () {
         .pipe($.size());
 });
 
-// jshint scripts
-gulp.task('scripts', function () {
-    return gulp.src('app/scripts/**/*.js')
+// vendor scripts
+gulp.task('vendor', function () {
+    return gulp.src([
+            'app/bower_components/jquery/dist/jquery.js'
+        ])
+        .pipe($.concat('vendor.js'))
+        .pipe(gulp.dest('.tmp/scripts'))
+        .pipe($.size());
+});
+
+// legacy scripts
+gulp.task('legacy', function () {
+    return gulp.src([
+            'app/bower_components/base64/base64.js'
+        ])
+        .pipe($.concat('legacy.js'))
+        .pipe(gulp.dest('.tmp/scripts'))
+        .pipe($.size());
+});
+
+// concat & jshint scripts
+gulp.task('scripts', ['vendor', 'legacy'], function () {
+    return gulp.src([
+            'app/scripts/app.js'
+        ])
+        .pipe($.concat('main.js'))
         .pipe($.jshint())
         .pipe($.jshint.reporter('jshint-stylish'))
+        .pipe(gulp.dest('.tmp/scripts'))
         .pipe($.size());
 });
 
@@ -57,11 +81,8 @@ gulp.task('html', ['styles', 'scripts'], function () {
     return gulp.src('app/templates/**/*.html')
         .pipe(fileinclude({
           prefix: '@@',
-          basepath: '@file'
+            basepath: '@file'
         }))
-        .pipe($.useref.assets({searchPath: '{.tmp,app}'}))
-        .pipe($.useref.restore())
-        .pipe($.useref())
         .pipe(gulp.dest('.tmp'))
         .pipe($.size());
 });
@@ -100,7 +121,7 @@ gulp.task('extras', function () {
         .pipe(gulp.dest('.tmp'));
 });
 
-gulp.task('critical', ['tidy', 'clone'], function (cb) {
+gulp.task('critical', ['tidy', 'minify'], function (cb) {
     critical.generateInline({
         base: 'dist/',
         src: 'index.html',
@@ -122,7 +143,7 @@ gulp.task('build', ['html', 'images', 'fonts', 'extras'], function () {
 });
 
 // minify where appropriate & output all generated files from .tmp to dist
-gulp.task('clone', ['tidy'], function () {
+gulp.task('minify', ['tidy'], function () {
     return gulp.src(['.tmp/**/*'], { dot: true })
         .pipe(gulpif('*.css', $.csso()))
         .pipe(gulpif('*.js', $.uglify()))
@@ -159,23 +180,6 @@ gulp.task('serve', ['connect', 'styles'], function () {
     require('opn')('http://localhost:7777');
 });
 
-// inject bower components
-gulp.task('wiredep', function () {
-    var wiredep = require('wiredep').stream;
-
-    gulp.src('app/styles/*.scss')
-        .pipe(wiredep({
-            directory: 'app/bower_components'
-        }))
-        .pipe(gulp.dest('app/styles'));
-
-    gulp.src('app/**/*.html')
-        .pipe(wiredep({
-            directory: 'app/bower_components'
-        }))
-        .pipe(gulp.dest('app'));
-});
-
 // watch for changes
 gulp.task('watch', ['html', 'connect', 'serve'], function () {
     var server = $.livereload();
@@ -195,5 +199,4 @@ gulp.task('watch', ['html', 'connect', 'serve'], function () {
     gulp.watch('app/styles/**/*.scss', ['styles']);
     gulp.watch('app/scripts/**/*.js', ['scripts']);
     gulp.watch('app/images/**/*', ['images']);
-    gulp.watch('bower.json', ['wiredep']);
 });
