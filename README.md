@@ -38,6 +38,10 @@ Build into `dist` directory with gulp:
 CSS, JS, and images will be concatenated & minified, PNG fallbacks for SVGs will be generated, critical path CSS will be inlined, and small images (<14kb) will be base64 encoded. 
 
 
+### Susy Toolkit   
+[Susy](http://susy.oddbird.net/) is used for most layout and media queries in Siegmeyer 2.   
+You should familiarise yourself with the [Susy docs](http://susydocs.oddbird.net/en/latest/)  
+
 
 ### Using the baseine grid
 
@@ -83,9 +87,6 @@ The `$scale-ratio` parameter allows you to easily set how much scaling of `$font
 
 For example; the above mixin will initially set the type to 1.25rem, and then incrementally scale up on each breakpoint in between until it reaches 2.5rem for the widest breakpoint (1.25rem * 2).
 
-### Susy Toolkit   
-[Susy](http://susy.oddbird.net/) is used for most layout and media queries in Siegmeyer 2.   
-You should familiarise yourself with the [Susy docs](http://susydocs.oddbird.net/en/latest/)  
 
 ### Using Susy grids in Siegmeyer
 Customise your breakpoints as follows: 
@@ -141,3 +142,5 @@ Use Siegmeyer's `breakpoint-layout` mixin to apply your styles:
 ###Roadmap      
 
 - Nicer HTML page / defaults
+- Improve accuracy of `trailer` & `leader` mixins
+- further optimise CSS output by type mixins
