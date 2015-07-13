@@ -83,10 +83,11 @@ The `$scale-ratio` parameter allows you to easily set how much scaling of `$font
 
 For example; the above mixin will initially set the type to 1.25rem, and then incrementally scale up on each breakpoint in between until it reaches 2.5rem for the widest breakpoint (1.25rem * 2).
 
-
+### Susy Toolkit   
+[Susy](http://susy.oddbird.net/) is used for most layout and media queries in Siegmeyer 2.   
+You should familiarise yourself with the [Susy docs](http://susydocs.oddbird.net/en/latest/)  
 
 ### Using Susy grids in Siegmeyer
-
 Customise your breakpoints as follows: 
 
 ```SCSS
