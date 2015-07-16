@@ -365,14 +365,12 @@
         // correct for negative values
         @if $baseline-shift < 0 {
             $correction: -1 * floor($baseline-shift);
-            @debug $correction;
             $baseline-shift: $baseline-shift + $correction;
             $leader-calc: $leader - $correction;
         }
 
         @if $baseline-push < 0 {
             $correction: -1 * floor($baseline-push);
-            @debug $correction;
             $baseline-push: $baseline-push + $correction;
             $trailer-calc: $trailer - $correction;
         }
@@ -468,14 +466,12 @@
                             // correct for negative values
                             @if $baseline-shift < 0 {
                                 $correction: -1 * floor($baseline-shift);
-                                @debug $correction;
                                 $baseline-shift: $baseline-shift + $correction;
                                 $leader-calc: $leader - $correction;
                             }
 
                             @if $baseline-push < 0 {
                                 $correction: -1 * floor($baseline-push);
-                                @debug $correction;
                                 $baseline-push: $baseline-push + $correction;
                                 $trailer-calc: $trailer - $correction;
                             }
