@@ -81,6 +81,9 @@
 // extend helper for cleaner markup
 %container {
     @include layout(break-get(break-0, layout));
+    padding-left: $gutter;
+    padding-right: $gutter;
+    box-sizing: border-box;
 
     @if break-get(break-0, max) != none {
         $break-adjusted: px-to-ems(break-get(break-0, max), 1px * nth($sizes, 1));
@@ -281,37 +284,63 @@
 
 // Root font-size in %, outputted in correct breakpoints.
 @mixin rootsize {
-    $max-size: nth($sizes, $breakpoint-count) / 16 * 100;
+    $min-size: nth($sizes, 1);
+    $max-size: nth($sizes, 2);
+    $min-width: break-get(nth($breaks, 2), start) / 2;
+    $max-width: break-get(nth($breaks, 2), start);
 
-    $size: nth($sizes, 1) / 16 * 100;
-    font-size: $size * 1%;
+    font-size: $min-size * 1px;
 
-    @if $fluid-type == true {
-        $fluid: 1 + (0.05 * ($max-size - $size) * 1);
-        font-size: 1vw * $fluid;
-
-        @media screen and (max-width: #{nth($sizes, 1) / $fluid * 100}px) {
-            font-size: $size * 1%;
-        }
+    @media screen and (min-width: break-get(nth($breaks, 2), start) / 2 / 16px * 1em) {
+        font-size: calc(#{$min-size * 1px} + #{no-unit($max-size) - no-unit($min-size)} * (100vw - #{$min-width}) / #{no-unit($max-width) - no-unit($min-width)});
     }
 
-    // Loop through breakpoints.
+    // // Loop through breakpoints.
     @for $i from 2 through $breakpoint-count {
-        @media screen and (min-width: break-get(nth($breaks, $i), start) / 16px * 1em ) {
-            $size: nth($sizes, $i) / 16 * 100;
-            font-size: $size * 1%;
+        @media screen and (min-width: break-get(nth($breaks, $i), start) / 16px * 1em) {
+            $min-size: nth($sizes, $i);
+            $min-width: break-get(nth($breaks, $i), start);
 
-            @if $fluid-type == true {
-                $fluid: 1 + (0.05 * ($max-size - $size) * 1);
-                font-size: 1vw * $fluid;
+            font-size: $min-size * 1%;
 
-                @media screen and (max-width: #{nth($sizes, $i) / $fluid * 100}px) {
-                    font-size: $size * 1%;
-                }
+            @if $i < $breakpoint-count {
+                $max-size: nth($sizes, $i + 1);
+                $max-width: break-get(nth($breaks, $i + 1), start);
+            } @else {
+                // largest breakpoint. Keep the scaling consitent with the previous breakpoint
+                $size-diff: nth($sizes, $i) - nth($sizes, $i - 1);
+                $width-diff: break-get(nth($breaks, $i), start) - break-get(nth($breaks, $i - 1), start);
+                $max-size: nth($sizes, $i) + $size-diff;
+                $max-width: break-get(nth($breaks, $i), start) + $width-diff;
+
             }
+
+            font-size: calc(#{$min-size * 1px} + #{no-unit($max-size) - no-unit($min-size)} * (100vw - #{$min-width}) / #{no-unit($max-width) - no-unit($min-width)});
         }
     }
 }
+
+// sometimes type info can get out of date.
+// for example if used in a breakpoint elsewhere to where the type mixin is originally set
+@mixin set-type-info($fontsize: false, $lineheight: false, $leader: false, $trailer: false, $multiplier: false) {
+    // set global variables so they can be accessed elsewhere
+    @if $fontsize != false {
+        $current-type-size: $fontsize !global;
+    }
+    @if $lineheight != false {
+        $current-type-lineheight: $lineheight !global;
+    }
+    @if $leader != false {
+        $current-type-leader: $leader !global;
+    }
+    @if $trailer != false {
+        $current-type-trailer: $trailer !global;
+    }
+    @if $multiplier != false {
+        $current-type-multiplier: $multiplier !global;
+    }
+}
+
 
 
 // Set fontsize and baseline at once
@@ -322,29 +351,98 @@
     $font-calc: $fontsize * nth($sizes, $context);
     $font-unit: unit($fontsize);
 
-    //set line height if different to default
-
+    // set line height if different to default
     @include rem(line-height, $lineheight * 1rem);
-
-    @include leader($leader);
-    @include trailer($trailer);
 
     @if $font-value == number or $font-unit != rem {
         @include rem(font-size, $fontsize);
 
-        $baseline-shift: ($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + + 0.00001;
+        $baseline-shift: ($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001;
         $baseline-push: 0 - (($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
 
+        $leader-calc: $leader;
+        $trailer-calc: $trailer;
+        // correct for negative values
         @if $baseline-shift < 0 {
-            @include rem(margin-top, $baseline-shift * 1rem);
-        } @else {
-            @include rem(padding-top, $baseline-shift * 1rem);
+            $correction: -1 * floor($baseline-shift);
+            $baseline-shift: $baseline-shift + $correction;
+            $leader-calc: $leader - $correction;
         }
+
         @if $baseline-push < 0 {
-            @include rem(margin-bottom, $baseline-push * 1rem);
-        } @else {
-            @include rem(padding-bottom, $baseline-push * 1rem);
+            $correction: -1 * floor($baseline-push);
+            $baseline-push: $baseline-push + $correction;
+            $trailer-calc: $trailer - $correction;
         }
+
+        @include rem(padding-top, $baseline-shift * 1rem);
+        @include rem(padding-bottom, $baseline-push * 1rem);
+
+        @include leader($leader-calc);
+        @include trailer($trailer-calc);
+
+        // correct for extra baseline unit of space if trailer is 0
+        @if $trailer == 0 {
+            @include rem(margin-bottom, -1rem);
+        }
+
+        // set global variables so they can be accessed elsewhere
+        @include set-type-info($fontsize, $lineheight, $leader, $trailer, 1);
+
+        @if $debug-allow == true and $debug-baseline == true {
+            position: relative;
+            z-index: 0;
+
+            &:hover {
+                cursor: pointer;
+                z-index: 10000;
+
+                &:before {
+                    position: absolute;
+                    bottom: calc(100% + #{$leader * 1rem});
+                    left: 0;
+                    background-color: opacify($debug-color, 1);
+                    content: "size: #{$current-type-size} | line-height: #{$current-type-lineheight} | lead: #{$current-type-leader} | trail: #{$current-type-trailer}";
+                    font-size: 10px;
+                    line-height: 12px;
+                    color: #fff;
+                    padding: 0.5em;
+                    border-radius: 4px 4px 0 0;
+                    letter-spacing: 0.075em;
+                    -webkit-font-smoothing: subpixel-antialiased;
+                    border-bottom: 1px solid darken($debug-color, 8%);
+                    text-indent: 0;
+                    font-family: font-family-of($body-type);
+                }
+
+                &:after {
+                    background: transparentize($debug-color, 0.75);
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: -$leader-calc * 1rem;
+                    bottom: -$trailer-calc * 1rem;
+                    box-sizing: border-box;
+                    border: 2px solid transparentize($debug-color, 0.5);
+
+                    @if $leader > 0 {
+                        border-top-color: transparentize($debug-color, 0.5);
+                        border-top-width: $leader * 1rem;
+                    }
+
+                    @if $trailer > 0 {
+                        border-bottom-color: transparentize($debug-color, 0.5);
+                        border-bottom-width: $trailer * 1rem;
+                    }
+                }
+            }
+        }
+
+        $last-leader: $leader-calc;
+        $last-trailer: $trailer-calc;
+        $last-bls: $baseline-shift;
+        $last-blp: $baseline-push;
 
         @if $scale-ratio != 1 and $scale-ratio > 1 {
             $multiplier: 1;
@@ -362,19 +460,67 @@
 
                             @include rem(line-height, $line-height-calc * 1rem);
                             @include rem(font-size, $fontsize * $multiplier);
-                            $baseline-shift: ($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + + 0.00001;
-                            $baseline-push: 0 - (($font-calc / 2 * (($lineheight * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
+                            $baseline-shift: ($font-calc / 2 * (($line-height-calc * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001;
+                            $baseline-push: 0 - (($font-calc / 2 * (($line-height-calc * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
 
+                            // correct for negative values
                             @if $baseline-shift < 0 {
-                                @include rem(margin-top, $baseline-shift * 1rem);
-                            } @else {
+                                $correction: -1 * floor($baseline-shift);
+                                $baseline-shift: $baseline-shift + $correction;
+                                $leader-calc: $leader - $correction;
+                            }
+
+                            @if $baseline-push < 0 {
+                                $correction: -1 * floor($baseline-push);
+                                $baseline-push: $baseline-push + $correction;
+                                $trailer-calc: $trailer - $correction;
+                            }
+
+                            @if ($baseline-shift != $last-bls) {
                                 @include rem(padding-top, $baseline-shift * 1rem);
                             }
-                            @if $baseline-push < 0 {
-                                @include rem(margin-bottom, $baseline-push * 1rem);
-                            } @else {
+                            @if ($baseline-push != $last-blp) {
                                 @include rem(padding-bottom, $baseline-push * 1rem);
                             }
+
+                            @if ($leader-calc != $last-leader) {
+                                @include leader($leader-calc);
+                            }
+                            @if ($trailer-calc != $last-trailer) {
+                                @include trailer($trailer-calc);
+                            }
+
+                            // set global variables so they can be accessed elsewhere
+                            @include set-type-info($fontsize, $lineheight, $leader, $trailer, $multiplier);
+
+                            @if $debug-allow == true and $debug-baseline == true {
+
+
+                                &:hover {
+                                    &:before {
+                                        content: "size: #{$current-type-size * $multiplier}* (#{$fontsize}) | line-height: #{$line-height-calc}* (#{$current-type-lineheight}) | lead: #{$current-type-leader} | trail: #{$current-type-trailer} | *BP: #{$context}";
+                                    }
+
+                                    &:after {
+                                        top: -$leader-calc * 1rem;
+                                        bottom: -$trailer-calc * 1rem;
+                                        border: 2px solid transparentize($debug-color, 0.5);
+                                        @if $leader > 0 {
+                                            border-top-color: transparentize($debug-color, 0.5);
+                                            border-top-width: $leader * 1rem;
+                                        }
+                                        @if $trailer > 0 {
+                                            border-bottom-color: transparentize($debug-color, 0.5);
+                                            border-bottom-width: $trailer * 1rem;
+                                        }
+                                    }
+                                }
+                            }
+
+                            $last-leader: $leader-calc;
+                            $last-trailer: $trailer-calc;
+                            $last-bls: $baseline-shift;
+                            $last-blp: $baseline-push;
                         }
                     }
                 }
@@ -387,80 +533,125 @@
     }
 }
 
+// set leader spacing
 @mixin leader($units) {
+    $current-type-leader: $units !global;
+    $context: index($breaks, $current-breakpoint);
+
     @if ($units > 0) {
         @include rem(border-top, $units * 1rem solid transparent);
     } @else {
         border-top: 0 none;
     }
-}
 
-@mixin trailer($units) {
-    @if ($units > 0) {
-        @include rem(border-bottom, $units * 1rem solid transparent);
-    } @else {
-        border-bottom: 0 none;
+    @if $debug-allow == true and $debug-baseline == true {
+        &:hover {
+            &:before {
+                @if $current-breakpoint == break-0 or $current-type-multiplier == 1 {
+                    content: "size: #{$current-type-size} | line-height: #{$current-type-lineheight} | lead: #{$current-type-leader} | trail: #{$current-type-trailer}";
+                } @else {
+                    $val: index($breaks, $current-breakpoint);
+                    val: $val;
+                    content: "size: #{$current-type-size * $current-type-multiplier}* (#{$current-type-size}) | line-height: #{round($current-type-lineheight * $current-type-multiplier)}* (#{$current-type-lineheight}) | lead: #{$current-type-leader} | trail: #{$current-type-trailer} | *BP: #{$context}";
+                }
+                bottom: calc(100% + #{$units * 1rem});
+            }
+            &:after {
+                top: -$units * 1rem;
+
+                @if $units > 0 {
+                    border-top-color: transparentize($debug-color, 0.5);
+                    border-top-width: $units * 1rem;
+                }
+            }
+        }
     }
 }
 
+// set trailer spacing
+@mixin trailer($units, $correct: false) {
+    $units-calc: $units;
+    $current-type-trailer: $units !global;
+    $context: index($breaks, $current-breakpoint);
+
+    // option to correct for extra line height
+    @if ($correct == true) {
+        $units-calc: $units - 1;
+    }
+
+    @if ($units-calc > 0) {
+        @include rem(border-bottom, $units-calc * 1rem solid transparent);
+    } @else {
+        border-bottom: 0 none;
+    }
+
+    @if $debug-allow == true and $debug-baseline == true {
+        &:hover {
+            &:before {
+                @if $current-breakpoint == break-0 or $current-type-multiplier == 1 {
+                    content: "size: #{$current-type-size} | line-height: #{$current-type-lineheight} | lead: #{$current-type-leader} | trail: #{$current-type-trailer}";
+                } @else {
+                    content: "size: #{$current-type-size * $current-type-multiplier}* (#{$current-type-size}) | line-height: #{round($current-type-lineheight * $current-type-multiplier)}* (#{$current-type-lineheight}) | lead: #{$current-type-leader} | trail: #{$current-type-trailer} | *BP: #{$context}";
+                }
+            }
+            &:after {
+                bottom: -$units-calc * 1rem;
+
+                @if $units > 0 {
+                    border-bottom-color: transparentize($debug-color, 0.5);
+                    border-bottom-width: $units * 1rem;
+                }
+            }
+        }
+    }
+}
+
+// resets type, negates type rhythm
+@mixin reset-type() {
+    @extend %reset-type;
+}
+
+%reset-type {
+    border-top: 0 none;
+    border-bottom: 0 none;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    @if $debug-allow == true and $debug-baseline == true {
+        &:hover {
+            &:before,
+            &:after {
+                display: none;
+                content: none;
+            }
+        }
+    }
+}
+
+// match inner type to container
 @mixin type-match {
     line-height: 0;
 }
 
-//draws a nicer text decoration
-@mixin text-link($colour: #fff, $hover: $colour) {
+// better text decoration
+@mixin text-link($color: #fff, $hover: $color, $pos: 98%) {
     font-family: font-family-of($display-type);
     -webkit-font-smoothing: antialiased;
-    color: $colour;
-    background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,transparentize($colour, 0.65) 50%);
+    color: $color;
+    background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,transparentize($color, 0.4) 50%);
     background-repeat: repeat-x;
-    background-size: 2px 0.06em;
-    background-position: 0 91%;
-    transition: color .1s ease, background-image .1s ease;
+    background-size: 2px 0.065em;
+    background-position: 0 $pos;
+    transition: color .1s ease, background .5s ease, outline 0.25s ease;
 
     &:hover {
         color: $hover;
-        background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,transparentize($hover, 0.3) 50%);
-    }
-}
-
-// returns a number without a unit
-@function parseInt($n) {
-    @return $n / ($n * 0 + 1);
-}
-
-// generate legacy fallbacks for rem units
-@mixin rem($property, $values) {
-    $px : ();
-    $rem: ();
-    $context: index($breaks, $current-breakpoint);
-    $base: nth($sizes, $context);
-
-    @each $value in $values {
-        @if type-of($value) == number {
-            $unit: unit($value);
-            $val: parseInt($value);
-
-            @if $unit == "rem" {
-                $px : append($px,  ($val * $base + px));
-                $rem: append($rem, $value);
-            } @else {
-                $px : append($px,  $value);
-                $rem: append($rem, $value);
-            }
-        } @else {
-            $px : append($px , $value);
-            $rem: append($rem, $value);
-        }
+        background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,transparentize($hover, 0.15) 50%);
     }
 
-    @if $px == $rem {
-        #{$property}: $px;
-    } @else {
-        #{$property}: $px;
-
-        @if $parse-rem == true {
-            #{$property}: $rem;
-        }
+    .lt-ie10 & {
+        text-decoration: underline; // ie9 only
     }
 }
