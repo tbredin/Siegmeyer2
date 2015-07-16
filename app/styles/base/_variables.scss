@@ -46,17 +46,17 @@ $susy: (
 
 // responsive grid settings
 // column base width
-$column-width: 100px;
+$column-width: 96px;
 
 // column number at each breakpoint
-$break-0-cols: 4;
-$break-1-cols: 8;
+$break-0-cols: 6;
+$break-1-cols: 9;
 $break-2-cols: 12;
 
 // breakpoint position - where the breakpoint starts
 $break-0-width: 0px;
-$break-1-width: $column-width * $break-1-cols;
-$break-2-width: $column-width * $break-2-cols;
+$break-1-width: $column-width * $break-1-cols + 20px; // compensate for a scrollbar (approx)
+$break-2-width: $column-width * $break-2-cols + 20px; // compensate for a scrollbar (approx)
 
 // max width of grid container
 $break-0-max: $column-width * $break-0-cols;
