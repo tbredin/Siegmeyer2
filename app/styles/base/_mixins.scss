@@ -81,6 +81,9 @@
 // extend helper for cleaner markup
 %container {
     @include layout(break-get(break-0, layout));
+    padding-left: $gutter;
+    padding-right: $gutter;
+    box-sizing: border-box;
 
     @if break-get(break-0, max) != none {
         $break-adjusted: px-to-ems(break-get(break-0, max), 1px * nth($sizes, 1));
@@ -281,34 +284,38 @@
 
 // Root font-size in %, outputted in correct breakpoints.
 @mixin rootsize {
-    $max-size: nth($sizes, $breakpoint-count) / 16 * 100;
+    $min-size: nth($sizes, 1);
+    $max-size: nth($sizes, 2);
+    $min-width: break-get(nth($breaks, 2), start) / 2;
+    $max-width: break-get(nth($breaks, 2), start);
 
-    $size: nth($sizes, 1) / 16 * 100;
-    font-size: $size * 1%;
+    font-size: $min-size * 1px;
 
-    @if $fluid-type == true {
-        $fluid: 1 + (0.05 * ($max-size - $size) * 1);
-        font-size: 1vw * $fluid;
-
-        @media screen and (max-width: #{nth($sizes, 1) / $fluid * 100}px) {
-            font-size: $size * 1%;
-        }
+    @media screen and (min-width: break-get(nth($breaks, 2), start) / 2 / 16px * 1em) {
+        font-size: calc(#{$min-size * 1px} + #{no-unit($max-size) - no-unit($min-size)} * (100vw - #{$min-width}) / #{no-unit($max-width) - no-unit($min-width)});
     }
 
-    // Loop through breakpoints.
+    // // Loop through breakpoints.
     @for $i from 2 through $breakpoint-count {
-        @media screen and (min-width: break-get(nth($breaks, $i), start) / 16px * 1em ) {
-            $size: nth($sizes, $i) / 16 * 100;
-            font-size: $size * 1%;
+        @media screen and (min-width: break-get(nth($breaks, $i), start) / 16px * 1em) {
+            $min-size: nth($sizes, $i);
+            $min-width: break-get(nth($breaks, $i), start);
 
-            @if $fluid-type == true {
-                $fluid: 1 + (0.05 * ($max-size - $size) * 1);
-                font-size: 1vw * $fluid;
+            font-size: $min-size * 1%;
 
-                @media screen and (max-width: #{nth($sizes, $i) / $fluid * 100}px) {
-                    font-size: $size * 1%;
-                }
+            @if $i < $breakpoint-count {
+                $max-size: nth($sizes, $i + 1);
+                $max-width: break-get(nth($breaks, $i + 1), start);
+            } @else {
+                // largest breakpoint. Keep the scaling consitent with the previous breakpoint
+                $size-diff: nth($sizes, $i) - nth($sizes, $i - 1);
+                $width-diff: break-get(nth($breaks, $i), start) - break-get(nth($breaks, $i - 1), start);
+                $max-size: nth($sizes, $i) + $size-diff;
+                $max-width: break-get(nth($breaks, $i), start) + $width-diff;
+
             }
+
+            font-size: calc(#{$min-size * 1px} + #{no-unit($max-size) - no-unit($min-size)} * (100vw - #{$min-width}) / #{no-unit($max-width) - no-unit($min-width)});
         }
     }
 }
@@ -357,13 +364,17 @@
         $trailer-calc: $trailer;
         // correct for negative values
         @if $baseline-shift < 0 {
-            $baseline-shift: $baseline-shift + 1;
-            $leader-calc: $leader - 1;
+            $correction: -1 * floor($baseline-shift);
+            @debug $correction;
+            $baseline-shift: $baseline-shift + $correction;
+            $leader-calc: $leader - $correction;
         }
 
         @if $baseline-push < 0 {
-            $baseline-push: $baseline-push + 1;
-            $trailer-calc: $trailer - 1;
+            $correction: -1 * floor($baseline-push);
+            @debug $correction;
+            $baseline-push: $baseline-push + $correction;
+            $trailer-calc: $trailer - $correction;
         }
 
         @include rem(padding-top, $baseline-shift * 1rem);
@@ -403,6 +414,7 @@
                     -webkit-font-smoothing: subpixel-antialiased;
                     border-bottom: 1px solid darken($debug-color, 8%);
                     text-indent: 0;
+                    font-family: font-family-of($body-type);
                 }
 
                 &:after {
@@ -455,12 +467,17 @@
 
                             // correct for negative values
                             @if $baseline-shift < 0 {
-                                $baseline-shift: $baseline-shift + 1;
-                                $leader-calc: $leader - 1;
+                                $correction: -1 * floor($baseline-shift);
+                                @debug $correction;
+                                $baseline-shift: $baseline-shift + $correction;
+                                $leader-calc: $leader - $correction;
                             }
+
                             @if $baseline-push < 0 {
-                                $baseline-push: $baseline-push + 1;
-                                $trailer-calc: $trailer - 1;
+                                $correction: -1 * floor($baseline-push);
+                                @debug $correction;
+                                $baseline-push: $baseline-push + $correction;
+                                $trailer-calc: $trailer - $correction;
                             }
 
                             @if ($baseline-shift != $last-bls) {

@@ -61,13 +61,12 @@ p, li {
     text-align: left;
     color: site-color(steel);
     -webkit-font-smoothing: antialiased;
-    @include type($body-type, 1.25rem, 2, 0, 1);
+    @include type($body-type, 1.25rem, 2, 0, 2);
 }
 
 // Headings. OpenType ligatures, discretionary ligatures and lining figures enabled if available.
 h1, h2, h3, h4, h5, h6 {
     font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
-    color: #fff;
     font-family: font-family-of($display-type);
     -webkit-font-smoothing: antialiased;
     font-weight: regular-of($display-type);
@@ -75,19 +74,20 @@ h1, h2, h3, h4, h5, h6 {
     margin-right: auto;
 
     a {
-        @include text-link(#fff);
         @include type-match;
     }
 }
 
 // Heading level 1.
 h1 {
-    @include type($font: $display-type, $fontsize: 3.75rem, $lineheight: 4, $leader: 1, $trailer: 3, $scale-ratio: 1.5);
+    @include type($display-type, 3rem, 3, 1, 2, 1.5);
+    font-weight: bold-of($display-type);
 }
 
 // Heading level 2.
 h2 {
-    @include type($display-type, 2.2rem, 3, 1, 1, 1.35);
+    @include type($display-type, 2.25rem, 3, 1, 1, 1.35);
+    font-weight: bold-of($display-type);
 }
 
 // Heading level 3.

@@ -11,10 +11,6 @@ $site-colors: (
     blue: #3a5ca4,
     yellow: #fac011,
     green: #267f67,
-    purple: #b15694,
-    purple_dark: #481d74,
-    red: #e4545c,
-    rose: #f54848,
     grey: #f1f8fa,
     steel: #4b4c57,
     steel_light: #707287,
@@ -38,7 +34,7 @@ $gutter: 1.25rem;
 $susy: (
     global-box-sizing: content-box,
     math: fluid,
-    container-position: 5%,
+    container-position: center,
     debug: (
         color: transparentize($debug-color,0.6)
     ),
@@ -47,7 +43,6 @@ $susy: (
     )
 );
 
-$base-font-size: 16px;
 
 // responsive grid settings
 // column base width
@@ -76,13 +71,13 @@ $break-2-layout: $break-2-cols ($column-width 0px);
 
 // enable responsive baseline & type scaling.
 // increases root font size from each breakpoint, starting from the min size specified in $rootsizes below
-$fluid-type: true;
+$type-scaling: "basic";
 
 // Root font-sizes for each breakpoint. Set to half desired line-height of body text.
 $rootsizes: (
     break-0: 13,   // 26px line-height body text
-    break-1: 14,   // 30px line-height body text
-    break-2: 15   // 34px line-height body text
+    break-1: 15,   // 30px line-height body text
+    break-2: 17   // 34px line-height body text
 );
 
 // map for flexible retrieval of breakpoint info
@@ -119,6 +114,9 @@ $breaks: map-keys($breakpoint-map);
 // rootsizes
 $sizes: map-values($rootsizes);
 
+// can be read at any breakpoint to get root size
+$base-font-size: nth($sizes, 1);
+
 // set the initial breakpoint information referenced by type mixins
 // you can use these to retrieve current breakpoint info within breakpoint mixins$current-breakpoint: break-0;
 $current-root: map-get($rootsizes, break-0);
@@ -143,17 +141,16 @@ $retina-suffix: '@2x';
 // Lucida Grande: 0.72, Helvetica: 0.65, Verdana: 0.76, Tahoma: 0.76
 $body-type: (
     font-family: 'Helvetica, sans-serif',
-    regular: 100,
-    bold: 400,
-    italic: italic,
+    regular: normal,
+    bold: bold,
     cap-height: 0.65
 );
 
 $display-type: (
-    font-family: 'Georga, serif',
-    regular: 400,
-    bold: 700,
-    cap-height: 0.66
+    font-family: 'Helvetica, sans-serif',
+    regular: normal,
+    bold: bold,
+    cap-height: 0.69
 );
 
 $monospace-type: (
