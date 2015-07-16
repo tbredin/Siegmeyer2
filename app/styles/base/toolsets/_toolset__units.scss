@@ -63,3 +63,59 @@
     }
     @return $value;
 }
+
+// return integer
+@function parseInt($n) {
+    @return $n / ($n * 0 + 1);
+}
+
+
+// produce legacy fallback for rem units
+// eg: @include rem(height, 4rem);
+// eg: @include rem(border-width, 1rem 5px 5% 0);
+@mixin rem($property, $values) {
+    $px : ();
+    $rem: ();
+    $context: index($breaks, $current-breakpoint);
+    $base: nth($sizes, $context);
+
+    @each $value in $values {
+
+        @if type-of($value) == number {
+            $unit: unit($value);
+            $val: parseInt($value);
+
+            @if $unit == "rem" {
+                $px : append($px,  (round($val * $base) + px));
+                $rem: append($rem, $value);
+            } @else {
+                $px : append($px,  $value);
+                $rem: append($rem, $value);
+            }
+        } @else {
+            $px : append($px , $value);
+            $rem: append($rem, $value);
+        }
+    }
+
+    @if $px == $rem {
+        #{$property}: $px;
+    } @else {
+        #{$property}: $px;
+
+        @if $parse-rem == true {
+            #{$property}: $rem;
+        }
+    }
+}
+
+@mixin fill-container {
+    .container & {
+        margin-left: -$grid-gutter-width * 2;
+        margin-right: -$grid-gutter-width * 2;
+    }
+    .container.side-bar_open & {
+        margin-left: -55px;
+    }
+}
+
