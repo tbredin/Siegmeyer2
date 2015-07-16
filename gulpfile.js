@@ -39,6 +39,13 @@ gulp.task('styles', function () {
         .pipe($.size());
 });
 
+// modernizr script
+gulp.task('modernizr', function () {
+    return gulp.src('app/bower_components/modernizr/modernizr.js')
+        .pipe(gulp.dest('.tmp/scripts/vendor'))
+        .pipe($.size());
+});
+
 // vendor scripts
 gulp.task('vendor', function () {
     return gulp.src([
@@ -60,7 +67,7 @@ gulp.task('legacy', function () {
 });
 
 // concat & jshint scripts
-gulp.task('scripts', ['vendor', 'legacy'], function () {
+gulp.task('scripts', ['modernizr', 'vendor', 'legacy'], function () {
     return gulp.src([
             'app/scripts/app.js'
         ])
