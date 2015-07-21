@@ -141,6 +141,6 @@ Use Siegmeyer's `breakpoint-layout` mixin to apply your styles:
 
 ###Roadmap
 
-- Nicer HTML page / defaults
-- Improve accuracy of `trailer` & `leader` mixins
-- further optimise CSS output by type mixins
+- More demos (varied config examples)
+- allow font size & leading to be set via px
+- add ability to reign in extra top line space on small type
