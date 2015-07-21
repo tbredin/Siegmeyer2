@@ -261,7 +261,6 @@
     }
 }
 
-
 // Clearfix.
 @mixin clearfix {
     &:before, &:after{
@@ -348,7 +347,7 @@
     $font-value: type-of($fontsize);
     $cap-height: map-get($font, cap-height);
     $context: index($breaks, $current-breakpoint);
-    $font-calc: $fontsize * nth($sizes, $context);
+    $font-calc: no-unit($fontsize) * nth($sizes, $context);
     $font-unit: unit($fontsize);
 
     // set line height if different to default
@@ -364,15 +363,15 @@
         $trailer-calc: $trailer;
         // correct for negative values
         @if $baseline-shift < 0 {
-            $correction: -1 * floor($baseline-shift);
-            $baseline-shift: $baseline-shift + $correction;
-            $leader-calc: $leader - $correction;
+            $correction-bls: -1 * floor($baseline-shift);
+            $baseline-shift: $baseline-shift + $correction-bls;
+            $leader-calc: $leader - $correction-bls;
         }
 
         @if $baseline-push < 0 {
-            $correction: -1 * floor($baseline-push);
-            $baseline-push: $baseline-push + $correction;
-            $trailer-calc: $trailer - $correction;
+            $correction-blp: -1 * floor($baseline-push);
+            $baseline-push: $baseline-push + $correction-blp;
+            $trailer-calc: $trailer - $correction-blp;
         }
 
         @include rem(padding-top, $baseline-shift * 1rem);
@@ -384,6 +383,19 @@
         // correct for extra baseline unit of space if trailer is 0
         @if $trailer == 0 {
             @include rem(margin-bottom, -1rem);
+        } @else {
+            @include rem(margin-bottom, 0);
+        }
+
+        // correct for line height more than a line taller than type; remove 1 from top
+        $remainder: $lineheight * nth($sizes, $context) - $font-calc;
+
+        @if $remainder <= 0 {
+            $remainder: 0;
+            @include rem(margin-top, 0);
+        } @else {
+            $remainder: 1rem;
+            @include rem(margin-top, -1rem);
         }
 
         // set global variables so they can be accessed elsewhere
@@ -399,7 +411,7 @@
 
                 &:before {
                     position: absolute;
-                    bottom: calc(100% + #{$leader * 1rem});
+                    bottom: calc(100% + #{$leader * 1rem - $remainder});
                     left: 0;
                     background-color: opacify($debug-color, 1);
                     content: "size: #{$current-type-size} | line-height: #{$current-type-lineheight} | lead: #{$current-type-leader} | trail: #{$current-type-trailer}";
@@ -421,7 +433,7 @@
                     position: absolute;
                     left: 0;
                     right: 0;
-                    top: -$leader-calc * 1rem;
+                    top: -$leader-calc * 1rem + $remainder;
                     bottom: -$trailer-calc * 1rem;
                     box-sizing: border-box;
                     border: 2px solid transparentize($debug-color, 0.5);
@@ -436,96 +448,6 @@
                         border-bottom-width: $trailer * 1rem;
                     }
                 }
-            }
-        }
-
-        $last-leader: $leader-calc;
-        $last-trailer: $trailer-calc;
-        $last-bls: $baseline-shift;
-        $last-blp: $baseline-push;
-
-        @if $scale-ratio != 1 and $scale-ratio > 1 {
-            $multiplier: 1;
-            @if $current-breakpoint == break-0 {
-                @each $breakpoint in $breaks {
-                    @if $breakpoint != break-0 {
-
-                        @include breakpoint-layout($breakpoint) {
-                            $increment: ($scale-ratio - 1) / ($breakpoint-count - 1);
-                            $multiplier: $multiplier + $increment;
-
-                            $line-height-calc: round($lineheight * $multiplier);
-                            $context: index($breaks, $current-breakpoint);
-                            $font-calc: $fontsize * nth($sizes, $context) * $multiplier;
-
-                            @include rem(line-height, $line-height-calc * 1rem);
-                            @include rem(font-size, $fontsize * $multiplier);
-                            $baseline-shift: ($font-calc / 2 * (($line-height-calc * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001;
-                            $baseline-push: 0 - (($font-calc / 2 * (($line-height-calc * $current-root / $font-calc) - $cap-height)) / $current-root + 0.00001);
-
-                            // correct for negative values
-                            @if $baseline-shift < 0 {
-                                $correction: -1 * floor($baseline-shift);
-                                $baseline-shift: $baseline-shift + $correction;
-                                $leader-calc: $leader - $correction;
-                            }
-
-                            @if $baseline-push < 0 {
-                                $correction: -1 * floor($baseline-push);
-                                $baseline-push: $baseline-push + $correction;
-                                $trailer-calc: $trailer - $correction;
-                            }
-
-                            @if ($baseline-shift != $last-bls) {
-                                @include rem(padding-top, $baseline-shift * 1rem);
-                            }
-                            @if ($baseline-push != $last-blp) {
-                                @include rem(padding-bottom, $baseline-push * 1rem);
-                            }
-
-                            @if ($leader-calc != $last-leader) {
-                                @include leader($leader-calc);
-                            }
-                            @if ($trailer-calc != $last-trailer) {
-                                @include trailer($trailer-calc);
-                            }
-
-                            // set global variables so they can be accessed elsewhere
-                            @include set-type-info($fontsize, $lineheight, $leader, $trailer, $multiplier);
-
-                            @if $debug-allow == true and $debug-baseline == true {
-
-
-                                &:hover {
-                                    &:before {
-                                        content: "size: #{$current-type-size * $multiplier}* (#{$fontsize}) | line-height: #{$line-height-calc}* (#{$current-type-lineheight}) | lead: #{$current-type-leader} | trail: #{$current-type-trailer} | *BP: #{$context}";
-                                    }
-
-                                    &:after {
-                                        top: -$leader-calc * 1rem;
-                                        bottom: -$trailer-calc * 1rem;
-                                        border: 2px solid transparentize($debug-color, 0.5);
-                                        @if $leader > 0 {
-                                            border-top-color: transparentize($debug-color, 0.5);
-                                            border-top-width: $leader * 1rem;
-                                        }
-                                        @if $trailer > 0 {
-                                            border-bottom-color: transparentize($debug-color, 0.5);
-                                            border-bottom-width: $trailer * 1rem;
-                                        }
-                                    }
-                                }
-                            }
-
-                            $last-leader: $leader-calc;
-                            $last-trailer: $trailer-calc;
-                            $last-bls: $baseline-shift;
-                            $last-blp: $baseline-push;
-                        }
-                    }
-                }
-            } @else {
-                @warn "ERROR: scale-ratio must be used from root context, not within media queries";
             }
         }
     } @else {
