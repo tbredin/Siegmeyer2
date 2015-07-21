@@ -80,13 +80,13 @@ h1, h2, h3, h4, h5, h6 {
 
 // Heading level 1.
 h1 {
-    @include type($display-type, 3rem, 3, 1, 2/*, 1.5*/);
+    @include type($display-type, 3rem, 3, 1, 2);
     font-weight: bold-of($display-type);
 }
 
 // Heading level 2.
 h2 {
-    @include type($display-type, 2.25rem, 3, 1, 1/*, 1.35*/);
+    @include type($display-type, 2.25rem, 3, 1, 1);
     font-weight: bold-of($display-type);
 }
 
