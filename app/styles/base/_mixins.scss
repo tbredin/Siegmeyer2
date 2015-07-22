@@ -288,10 +288,12 @@
     $min-width: break-get(nth($breaks, 2), start) / 2;
     $max-width: break-get(nth($breaks, 2), start);
 
-    font-size: $min-size * 1px;
+    font-size: $min-size / 16 * 100%;
 
-    @media screen and (min-width: break-get(nth($breaks, 2), start) / 2 / 16px * 1em) {
-        font-size: calc(#{$min-size * 1px} + #{no-unit($max-size) - no-unit($min-size)} * (100vw - #{$min-width}) / #{no-unit($max-width) - no-unit($min-width)});
+    @if ($type-scaling == true) {
+        @media screen and (min-width: break-get(nth($breaks, 2), start) / 2 / 16px * 1em) {
+            font-size: calc(#{$min-size * 1px} + #{no-unit($max-size) - no-unit($min-size)} * (100vw - #{$min-width}) / #{no-unit($max-width) - no-unit($min-width)});
+        }
     }
 
     // // Loop through breakpoints.
@@ -300,21 +302,23 @@
             $min-size: nth($sizes, $i);
             $min-width: break-get(nth($breaks, $i), start);
 
-            font-size: $min-size * 1%;
+            font-size: $min-size / 16 * 100%;
 
-            @if $i < $breakpoint-count {
-                $max-size: nth($sizes, $i + 1);
-                $max-width: break-get(nth($breaks, $i + 1), start);
-            } @else {
-                // largest breakpoint. Keep the scaling consitent with the previous breakpoint
-                $size-diff: nth($sizes, $i) - nth($sizes, $i - 1);
-                $width-diff: break-get(nth($breaks, $i), start) - break-get(nth($breaks, $i - 1), start);
-                $max-size: nth($sizes, $i) + $size-diff;
-                $max-width: break-get(nth($breaks, $i), start) + $width-diff;
+            @if ($type-scaling == true) {
+                @if $i < $breakpoint-count {
+                    $max-size: nth($sizes, $i + 1);
+                    $max-width: break-get(nth($breaks, $i + 1), start);
+                } @else {
+                    // largest breakpoint. Keep the scaling consitent with the previous breakpoint
+                    $size-diff: nth($sizes, $i) - nth($sizes, $i - 1);
+                    $width-diff: break-get(nth($breaks, $i), start) - break-get(nth($breaks, $i - 1), start);
+                    $max-size: nth($sizes, $i) + $size-diff;
+                    $max-width: break-get(nth($breaks, $i), start) + $width-diff;
 
+                }
+
+                font-size: calc(#{$min-size * 1px} + #{no-unit($max-size) - no-unit($min-size)} * (100vw - #{$min-width}) / #{no-unit($max-width) - no-unit($min-width)});
             }
-
-            font-size: calc(#{$min-size * 1px} + #{no-unit($max-size) - no-unit($min-size)} * (100vw - #{$min-width}) / #{no-unit($max-width) - no-unit($min-width)});
         }
     }
 }

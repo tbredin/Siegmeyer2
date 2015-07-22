@@ -1,6 +1,6 @@
 {
   "name": "Siegmeyer2",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "dependencies": {},
   "devDependencies": {
     "autoprefixer-core": "^5.2.1",
@@ -38,5 +38,27 @@
   },
   "engines": {
     "node": ">=0.10.0"
-  }
+  },
+  "description": "Siegmeyer2",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "gulp watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tbredin/Siegmeyer2"
+  },
+  "keywords": [
+    "Siegmeyer",
+    "Grid",
+    "Typography",
+    "Gulp",
+    "SASS"
+  ],
+  "author": "Thomas Bredin-Grey <tbredin@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tbredin/Siegmeyer2/issues"
+  },
+  "homepage": "https://github.com/tbredin/Siegmeyer2"
 }
