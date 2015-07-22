@@ -1,4 +1,4 @@
-![Siegmeyer2 icon](https://raw.github.com/tbredin/Siegmeyer2/master/siegmeyer.gif)
+![Siegmeyer2 icon](https://raw.github.com/tbredin/Siegmeyer2/develop/siegmeyer.gif)
 Siegmeyer2
 ==========
 
