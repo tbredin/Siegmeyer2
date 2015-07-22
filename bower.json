@@ -1,6 +1,5 @@
 {
   "name": "siegmeyer2",
-  "private": false,
   "dependencies": {
     "modernizr": "~2.6.2",
     "jquery": "~1.11.0"
@@ -8,5 +7,33 @@
   "devDependencies": {
     "scut": "~0.10.4",
     "base64": "~0.3.0"
-  }
+  },
+  "version": "0.0.0",
+  "homepage": "https://github.com/tbredin/Siegmeyer2",
+  "authors": [
+    "tbredin <tbredin@gmail.com>"
+  ],
+  "description": "Siegmeyer2 is a static SMACSS boilerplate using Susy grids, Siegmeyer typographic rhythm, and Gulp",
+  "main": [
+    "gulpfile.js",
+    "app/styles/screen.scss"
+  ],
+  "keywords": [
+    "Siegmeyer",
+    "Boilerplate",
+    "Typography",
+    "Grid",
+    "Sass",
+    "Gulp",
+    "Susy"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ]
 }
