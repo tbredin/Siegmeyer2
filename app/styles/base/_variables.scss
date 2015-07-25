@@ -15,7 +15,7 @@ $site-colors: (
     steel: #4b4c57,
     steel_light: #707287,
     white: #fff
-);
+) !default;
 
 $site-color-names: map-keys($site-colors);
 
@@ -25,16 +25,17 @@ $site-color-names: map-keys($site-colors);
 }
 
 // debug grids
-$debug-color: tomato;
+$debug-color: tomato !default;
 
 //interior gutters
-$gutter: 1.25rem;
+$gutter: 2rem !default;
 
 // susy settings
 $susy: (
     global-box-sizing: content-box,
     math: fluid,
     container-position: auto,
+    gutter-position: inside-static,
     debug: (
         color: transparentize($debug-color,0.6)
     ),
@@ -43,42 +44,52 @@ $susy: (
     )
 );
 
-
-// responsive grid settings
-// column base width
-$column-width: 96px;
-
-// column number at each breakpoint
-$break-0-cols: 6;
-$break-1-cols: 9;
-$break-2-cols: 12;
-
-// breakpoint position - where the breakpoint starts
-$break-0-width: 0px;
-$break-1-width: $column-width * $break-1-cols + 20px; // compensate for a scrollbar (approx)
-$break-2-width: $column-width * $break-2-cols + 20px; // compensate for a scrollbar (approx)
-
-// max width of grid container
-$break-0-max: $column-width * $break-0-cols;
-$break-1-max: $column-width * $break-1-cols;
-$break-2-max: $column-width * $break-2-cols;
-
-// susy breakpoint layouts
-// format: [column-number] ([relative proportion of column] [relative proportion of gutter])
-$break-0-layout: $break-0-cols ($column-width 0px);
-$break-1-layout: $break-1-cols ($column-width 0px);
-$break-2-layout: $break-2-cols ($column-width 0px);
-
-// enable responsive baseline & type scaling.
-// increases root font size from each breakpoint, starting from the min size specified in $rootsizes below
-$type-scaling: true;
-
 // Root font-sizes for each breakpoint. Set to half desired line-height of body text.
 $rootsizes: (
     break-0: 13,   // 26px line-height body text
     break-1: 15,   // 30px line-height body text
     break-2: 17    // 34px line-height body text
-);
+) !default;
+
+// rootsizes
+$sizes: map-values($rootsizes) !default;
+
+// can be read at any breakpoint to get root size
+$base-font-size: nth($sizes, 1) !default;
+
+// set the initial breakpoint information referenced by type mixins
+// you can use these to retrieve current breakpoint info within breakpoint-layout mixins
+$current-root: map-get($rootsizes, break-0) !default;
+
+// responsive grid settings
+// column base width
+$column-width: 6rem;
+
+// column number at each breakpoint
+$break-0-cols: 6 !default;
+$break-1-cols: 9 !default;
+$break-2-cols: 12 !default;
+
+// breakpoint position - where the breakpoint starts
+$break-0-width: 0px !default;
+$break-1-width: ($column-width / 1rem) * nth($sizes, 2) * 1px * $break-1-cols + 20px !default; // compensate for a scrollbar (approx)
+$break-2-width: ($column-width / 1rem) * nth($sizes, 3) * 1px * $break-2-cols + 20px !default; // compensate for a scrollbar (approx)
+
+// max width of grid container
+$break-0-max: ($column-width / 1rem) * nth($sizes, 1) * 1px * $break-0-cols  !default;
+$break-1-max: ($column-width / 1rem) * nth($sizes, 2) * 1px * $break-1-cols  !default;
+$break-2-max: ($column-width / 1rem) * nth($sizes, 3) * 1px * $break-2-cols  !default;
+
+
+// susy breakpoint layouts
+// format: [column-number] ([relative proportion of column] [relative proportion of gutter])
+$break-0-layout: $break-0-cols ($column-width $gutter) inside-static !default;
+$break-1-layout: $break-1-cols ($column-width $gutter) inside-static !default;
+$break-2-layout: $break-2-cols ($column-width $gutter) inside-static !default;
+
+// enable responsive baseline & type scaling.
+// increases root font size from each breakpoint, starting from the min size specified in $rootsizes below
+$type-scaling: true !default;
 
 // map for flexible retrieval of breakpoint info
 $breakpoint-map: (
@@ -103,35 +114,25 @@ $breakpoint-map: (
         layout:     $break-2-layout,
         size:       map-get($rootsizes, break-2)
     )
-);
+) !default;
 
 // breakpoint count
-$breakpoint-count: length(map-keys($breakpoint-map));
+$breakpoint-count: length(map-keys($breakpoint-map)) !default;
 
 // breakpoint names
-$breaks: map-keys($breakpoint-map);
-
-// rootsizes
-$sizes: map-values($rootsizes);
-
-// can be read at any breakpoint to get root size
-$base-font-size: nth($sizes, 1);
-
-// set the initial breakpoint information referenced by type mixins
-// you can use these to retrieve current breakpoint info within breakpoint mixins$current-breakpoint: break-0;
-$current-root: map-get($rootsizes, break-0);
+$breaks: map-keys($breakpoint-map) !default;
 
 // debug grid columns, baseline grid & breakpoints
-$debug-grid: true;
-$debug-baseline: true;
-$debug-breakpoints: true;
+$debug-grid: true !default;
+$debug-baseline: true !default;
+$debug-breakpoints: true !default;
 
 // grid opacity
-$grid-opacity: 0.1;
+$grid-opacity: 0.1 !default;
 
 // image settings
-$image-path: '../images';
-$retina-suffix: '@2x';
+$image-path: '../images' !default;
+$retina-suffix: '@2x' !default;
 
 // Add typefaces here.
 // Add weight and style details too.
@@ -144,27 +145,27 @@ $body-type: (
     regular: normal,
     bold: bold,
     cap-height: 0.65
-);
+) !default;
 
 $display-type: (
     font-family: 'Helvetica, sans-serif',
     regular: normal,
     bold: bold,
     cap-height: 0.69
-);
+) !default;
 
 $monospace-type: (
     font-family: 'Menlo, monospace',
     regular: 400,
     cap-height: 0.68
-);
+) !default;
 
 // for debugging rem fallback; prevents rem from being output, exposing px fallbacks
-$parse-rem: true;
+$parse-rem: true !default;
 
 // type info variables
-$current-type-trailer: 0;
-$current-type-leader: 0;
-$current-type-size: 0;
-$current-type-lineheight: 0;
-$current-type-multiplier: 1;
+$current-type-trailer: 0 !default;
+$current-type-leader: 0 !default;
+$current-type-size: 0 !default;
+$current-type-lineheight: 0 !default;
+$current-type-multiplier: 1 !default;
