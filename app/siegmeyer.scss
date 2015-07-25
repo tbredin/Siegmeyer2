@@ -12,7 +12,7 @@ $debug-allow: true;
 
 // import layout toolsets
 @import "susy";
-@import "../bower_components/scut/dist/scut";
+@import "../../bower_components/scut/dist/scut";
 
 // custom toolsets
 @import "base/toolsets/toolset__units";
