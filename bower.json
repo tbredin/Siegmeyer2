@@ -2,7 +2,9 @@
   "name": "siegmeyer2",
   "dependencies": {
     "modernizr": "~2.6.2",
-    "jquery": "~1.11.0"
+    "jquery": "~1.11.0",
+    "scut": "~0.10.4",
+    "susy": "~2.2.5"
   },
   "devDependencies": {
     "scut": "~0.10.4",
