@@ -32,9 +32,9 @@
 }
 
 // Converts an rem value to px. Should only work in absolute em document context (root level)
-@function rem-to-px($value) {
+@function rem-to-px($value, $context: $current-root) {
     @if unit($value) == "rem" {
-        $value : no-unit($value) * no-unit($current-root);
+        $value : no-unit($value) * no-unit($context);
         $value : $value * 1px;
     }
     @return $value;

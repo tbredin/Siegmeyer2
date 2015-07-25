@@ -7,24 +7,24 @@
 // =====================================================
 
 // this file can be imported as a bower component
-// ideally at top of file (produces reset)
+// just makes siegmeyer mixins available (no output css)
 
 // toggle debug
 $debug-allow: true;
 
 // import layout toolsets
-@import "susy";
-@import "../../bower_components/scut/dist/scut";
+@import "../../../bower_components/susy/sass/susy";
+@import "../../../bower_components/scut/dist/scut";
 
 // custom toolsets
-@import "base/toolsets/toolset__units";
-@import "base/toolsets/toolset__misc";
+@import "styles/base/toolsets/toolset__units";
+@import "styles/base/toolsets/toolset__misc";
 
 // import site base
-@import "base/reset";
-@import "base/variables";
-@import "base/mixins";
+// @import "styles/base/reset"; // optional
+@import "styles/base/variables";
+@import "styles/base/mixins";
 
-// Siegmeyer 2 new typography defaults
-// @import "base/typography";
-// @import "base/globals";
+// Typography and globals
+// @import "styles/base/typography"; // optional
+// @import "styles/base/globals"; // optional
