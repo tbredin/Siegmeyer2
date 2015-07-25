@@ -1,11 +1,13 @@
 // =====================================================
-// ------------- Siegmeyer II Main Styles --------------
+// ------------ Siegmeyer II Bower include -------------
 // =====================================================
 // @author Thomas Bredin-Grey <tbredin@gmail.com>
 // Siegmeyer II: https://github.com/tbredin/Siegmeyer2
 //               bower install siegmeyer2
 // =====================================================
 
+// this file can be imported as a bower component
+// ideally at top of file (produces reset)
 
 // toggle debug
 $debug-allow: true;
@@ -21,9 +23,8 @@ $debug-allow: true;
 // import site base
 @import "base/reset";
 @import "base/variables";
-@import "base/webfonts";
 @import "base/mixins";
 
 // Siegmeyer 2 new typography defaults
-@import "base/typography";
-@import "base/globals";
+// @import "base/typography";
+// @import "base/globals";

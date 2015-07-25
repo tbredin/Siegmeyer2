@@ -9,7 +9,7 @@
     "base64": "~0.3.0",
     "susy": "~2.2.5"
   },
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/tbredin/Siegmeyer2",
   "authors": [
     "tbredin <tbredin@gmail.com>"
@@ -17,7 +17,7 @@
   "description": "Siegmeyer2 is a static SMACSS boilerplate using Susy grids, Siegmeyer typographic rhythm, and Gulp",
   "main": [
     "gulpfile.js",
-    "app/styles/screen.scss"
+    "app/siegmeyer.scss"
   ],
   "keywords": [
     "Siegmeyer",
