@@ -28,7 +28,7 @@ gulp.task('styles', function () {
             outputStyle: 'expanded',
             precision: 4,
             includePaths: [
-                './node_modules/susy/sass'
+                './bower_components/susy/sass'
             ],
             onError: console.error.bind(console, 'Sass error:')
         }))
@@ -45,7 +45,7 @@ gulp.task('styles', function () {
 
 // modernizr script
 gulp.task('modernizr', function () {
-    return gulp.src('app/bower_components/modernizr/modernizr.js')
+    return gulp.src('./bower_components/modernizr/modernizr.js')
         .pipe(gulp.dest('.tmp/scripts/vendor'))
         .pipe($.size());
 });
@@ -53,7 +53,7 @@ gulp.task('modernizr', function () {
 // vendor scripts
 gulp.task('vendor', function () {
     return gulp.src([
-            'app/bower_components/jquery/dist/jquery.js'
+            './bower_components/jquery/dist/jquery.js'
         ])
         .pipe($.concat('vendor.js'))
         .pipe(gulp.dest('.tmp/scripts'))
@@ -63,7 +63,7 @@ gulp.task('vendor', function () {
 // legacy scripts
 gulp.task('legacy', function () {
     return gulp.src([
-            'app/bower_components/base64/base64.js'
+            './bower_components/base64/base64.js'
         ])
         .pipe($.concat('legacy.js'))
         .pipe(gulp.dest('.tmp/scripts'))
