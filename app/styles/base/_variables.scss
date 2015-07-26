@@ -32,7 +32,7 @@ $gutter: 2rem !default;
 
 // susy settings
 $susy: (
-    global-box-sizing: content-box,
+    global-box-sizing: border-box,
     math: fluid,
     container-position: auto,
     gutter-position: inside-static,
@@ -71,15 +71,16 @@ $break-1-cols: 9 !default;
 $break-2-cols: 12 !default;
 
 // breakpoint position - where the breakpoint starts
+// basic formula: $column-width * $break-cols, manually converted to px (+20px to compensate for scroll bars)
 $break-0-width: 0px !default;
-$break-1-width: ($column-width / 1rem) * nth($sizes, 2) * 1px * $break-1-cols + 20px !default; // compensate for a scrollbar (approx)
-$break-2-width: ($column-width / 1rem) * nth($sizes, 3) * 1px * $break-2-cols + 20px !default; // compensate for a scrollbar (approx)
+$break-1-width: ($column-width / 1rem) * nth($sizes, 2) * 1px * $break-1-cols + 20px !default; // 20px compensate for a scrollbar (approx)
+$break-2-width: ($column-width / 1rem) * nth($sizes, 3) * 1px * $break-2-cols + 20px !default; // 20px compensate for a scrollbar (approx)
 
 // max width of grid container
+// basic formula: $column-width * $break-cols, manually converted to px
 $break-0-max: ($column-width / 1rem) * nth($sizes, 1) * 1px * $break-0-cols  !default;
 $break-1-max: ($column-width / 1rem) * nth($sizes, 2) * 1px * $break-1-cols  !default;
 $break-2-max: ($column-width / 1rem) * nth($sizes, 3) * 1px * $break-2-cols  !default;
-
 
 // susy breakpoint layouts
 // format: [column-number] ([relative proportion of column] [relative proportion of gutter])

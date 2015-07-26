@@ -18,3 +18,7 @@ blockquote { quotes: none; }
 blockquote:before, blockquote:after { content: ''; content: none; }
 table { border-collapse: collapse; border-spacing: 0; }
 caption, th, td { text-align: left; font-weight: normal; vertical-align: middle; }
+
+* {
+    box-sizing: border-box;
+}
