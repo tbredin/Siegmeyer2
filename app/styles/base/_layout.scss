@@ -171,9 +171,11 @@
     .span-#{$bp-name}-full {
         @if $break == break-0 {
             @include span-common($bp-name);
+            float: none;
         } @else {
             @include breakpoint-layout($break) {
                 @include span-common($bp-name);
+                float: none;
             }
         }
     }
