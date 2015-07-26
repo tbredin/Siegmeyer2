@@ -142,8 +142,8 @@ Use Siegmeyer's `breakpoint-layout` mixin to apply your styles:
 ###As a Bower component
 
 You can also import Siegmeyer's SCSS as a bower component.
-This just makes all siegmeyer mixins available (does not output css)
-`bower install --save-dev siegmeyer2`
+This just makes all siegmeyer mixins available (does not output css)      
+`bower install --save-dev siegmeyer2`     
 `@import "bower_components/siegmeyer2/app/siegmeyer"`
 
 It is recommended to copy `base/_variables.scss` into your app and modify to suit your config
