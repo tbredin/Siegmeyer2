@@ -13,7 +13,6 @@
     "gulp-clean": "^0.2.4",
     "gulp-combine-media-queries": "^0.2.0",
     "gulp-concat": "^2.5.2",
-    "gulp-file-include": "^0.3.1",
     "gulp-filter": "^0.4.1",
     "gulp-flatten": "^0.0.2",
     "gulp-if": "^1.2.5",
@@ -33,6 +32,9 @@
     "imagemin-pngquant": "^0.1.2",
     "jshint-stylish": "^1.0.0",
     "opn": "^0.1.1",
+    "postcss-discard-duplicates": "^1.1.3",
+    "postcss-merge-rules": "^1.3.1",
+    "postcss-unique-selectors": "^1.0.0",
     "susy": "^2.2.5",
     "wiredep": "^1.4.3"
   },

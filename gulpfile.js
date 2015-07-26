@@ -33,7 +33,10 @@ gulp.task('styles', function () {
             onError: console.error.bind(console, 'Sass error:')
         }))
         .pipe($.postcss([
-            require('autoprefixer-core')({browsers: ['last 3 versions', '> 5%', 'IE >= 9']})
+            require('autoprefixer-core')({browsers: ['last 3 versions', '> 5%', 'IE >= 9']}),
+            require('postcss-merge-rules')(),
+            require('postcss-unique-selectors')(),
+            require('postcss-discard-duplicates')()
         ]))
         .pipe(gulpif('*.css', $.combineMediaQueries({
             log: true
@@ -90,10 +93,7 @@ gulp.task('html', ['styles', 'scripts'], function () {
     var cssFilter = $.filter('**/*.css');
 
     return gulp.src('app/templates/**/*.html')
-        .pipe(fileinclude({
-          prefix: '@@',
-            basepath: '@file'
-        }))
+        .pipe($.preprocess())
         .pipe(gulp.dest('.tmp'))
         .pipe($.size());
 });
