@@ -53,72 +53,137 @@ a {
 }
 
 // Paragraphs. OpenType ligatures and oldstyle figures enabled if available.
-p, li {
+p, li, figcaption {
     font-feature-settings: 'kern' 1, 'onum' 1, 'liga' 1;
     font-family: font-family-of($body-type);
-    margin-left: auto;
-    margin-right: auto;
     text-align: left;
     color: site-color(steel);
     -webkit-font-smoothing: antialiased;
-    @include type($body-type, 1.25rem, 2, 0, 2);
+
+    &.has-emphasis {
+        color: site-color(purple);
+    }
+}
+
+p, figcaption {
+    @include type($body-type, px-to-rems(16px), 2, 0, 2);
+
+    @include breakpoint-layout(break-2) {
+        max-width: 46em;
+    }
+}
+
+li {
+    @include type($body-type, px-to-rems(16px), 2, 0, 1);
+
+    &:last-child {
+        @include type($body-type, px-to-rems(16px), 2, 0, 2);
+    }
+}
+
+figcaption {
+    color: site-color(steel_light);
+    @include rem(font-size, 1.1rem);
+}
+
+figure img {
+    width: 100%;
 }
 
 // Headings. OpenType ligatures, discretionary ligatures and lining figures enabled if available.
 h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
     font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
-    font-family: font-family-of($display-type);
+    color: site-color(steel);
     -webkit-font-smoothing: antialiased;
-    font-weight: regular-of($display-type);
-    margin-left: auto;
-    margin-right: auto;
+    font-family: font-family-of($display-type);
 
     a {
+        @include text-link(site-color(blue));
         @include type-match;
+        font-weight: normal;
+    }
+
+    .content & {
+        clear: both;
     }
 }
 
 // Heading level 1.
-h1 {
-    @include type($display-type, 3rem, 3, 1, 2, 1.5);
+h1, .h1-style {
     font-weight: bold-of($display-type);
+
+    @include type($display-type, px-to-rems(32px), 3, 0, 4);
+
+    // tablet size for h1, maybe?
+    // @include breakpoint-layout(break-1) {
+    //     @include type($display-type, px-to-rems(64px * 3/5), 3, 0, 2);
+    // }
+
+    @include breakpoint-layout(break-2) {
+        max-width: 20em; // measure accurate to designs
+
+        @include type($display-type, px-to-rems(64px * 3/4), 4, 0, 2);
+    }
 }
 
 // Heading level 2.
-h2 {
-    @include type($display-type, 2.25rem, 3, 1, 1, 1.35);
-    font-weight: bold-of($display-type);
+h2, .h2-style {
+    @include type($display-type, px-to-rems(28px), 3, 0, 2);
+
+    // h2 following any other main type elements should have 4 lines above
+    h3 + &,
+    h4 + &,
+    h5 + &,
+    h6 + &,
+    p + &,
+    ul + &,
+    ol + &,
+    blockquote+ & {
+        @include type($display-type, px-to-rems(28px), 3, 4, 2);
+    }
 }
 
 // Heading level 3.
-h3 {
-    @include type($display-type, 2rem, 3, 1, 1);
+h3, .h3-style {
+    font-weight: bold-of($display-type);
+
+    @include type($display-type, px-to-rems(18px), 2, 0, 2);
+
+    // h3 following any other main type elements should have 1 line above
+    h4 + &,
+    h5 + &,
+    h6 + &,
+    p + &,
+    ul + &,
+    ol + &,
+    blockquote+ & {
+        @include type($display-type, px-to-rems(18px), 2, 1, 2);
+    }
 }
 
-// Heading level 4.
-h4 {
-    @include type($display-type, 1.75rem, 2, 1, 1);
+// Heading level 4, 5, 6.
+h4, .h4-style,
+h5, .h5-style,
+h6, .h6-style {
+    font-weight: bold-of($display-type);
+
+    @include type($display-type, px-to-rems(16px), 2, 0, 1);
+
+    p + &,
+    ul + &,
+    ol + &,
+    blockquote+ & {
+        @include type($display-type, px-to-rems(16px), 2, 1, 1);
+    }
 }
 
-// Heading level 5.
-h5 {
-    @include type($display-type, 1.5rem, 2, 1, 1);
-}
-
-// Heading level 6.
-h6 {
-    @include type($display-type, 1.3rem, 2, 1, 1);
-}
-
-// Lists.
-ul, ol {
-    @include rem(padding-left, 1.75rem);
+h5, h6 {
+    // @include disallow("h5 or h6");
 }
 
 ul {
     list-style: disc outside;
-
-    @include rem(padding-left, 1.5rem);
 
     li {
         @include rem(padding-left, 0.25rem);
@@ -126,11 +191,12 @@ ul {
 }
 
 ol {
-    list-style: decimal outside;
+    @include rem(padding-left, 1.25rem)
 }
 
 li {
     font-feature-settings: 'kern' 1, 'onum' 1, 'liga' 1;
+    @include rem(margin-left, 1.5rem);
 }
 
 // Bold.
@@ -149,7 +215,6 @@ small, .caption {
     -webkit-font-smoothing: antialiased;
     font-style: normal;
     font-weight: regular-of($body-type);
-    // @include fontsize(12);
     letter-spacing: -0.035em;
 }
 
@@ -159,40 +224,34 @@ small {
 
 .caption {
     color: site-color(steel);
-    // @include baseline(12, $headingtype, 2, 2);
 }
 
 // Quotes.
 blockquote {
+    clear: both;
+    @include clearfix;
 
     p {
-        font-style: italic-of($body-type);
-        @include rem(padding-left, 1rem);
-        @include rem(border-left, 0.1rem solid site-color(steel));
+        font-family: font-family-of($display-type);
         color: site-color(steel);
-        @include type($display-type, 1.5rem, 2, 2, 2);
+        margin-bottom: 0;
+        @include type($display-type, 1.5rem, 2, 2, 3);
+        position: relative;
+        overflow: visible;
+        @include rem(text-indent, 2.5rem !important);
 
-        // Add spacing below blockquote paragraphs to align to baseline grid.
-        // $rootsize: nth($sizes, 1);
-        // $baseline-shift: #{($get-size / 2 * ((2 * $rootsize / $get-size) - map-get($bodytype, cap-height))) / $rootsize + 0.00001};
-        // $baseline-push: #{3 - (($get-size * ((2 * $rootsize / $get-size) - map-get($bodytype, cap-height))) / $rootsize + 0.00001)};
-
-        // margin-bottom: #{$baseline-push}rem;
-        // padding-bottom: #{$baseline-shift}rem;
-
-        // @for $i from 2 through $breakpoints-limit {
-        //     $get-scale: map-get($modular-scale, scale-#{$i - 1});
-        //     $get-size: map-get($get-scale, zeta);
-        //     $rootsize: nth($sizes, $i);
-        //     $baseline-shift: #{($get-size / 2 * ((2 * $rootsize / $get-size) - map-get($bodytype, cap-height))) / $rootsize + 0.00001};
-        //     $baseline-push: #{3 - (($get-size * ((2 * $rootsize / $get-size) - map-get($bodytype, cap-height))) / $rootsize + 0.00001)};
-
-        //     @media screen and (min-width: nth($points, $i) / 16 * 1em ) {
-        //             margin-bottom: #{$baseline-push}rem;
-        //             padding-bottom: #{$baseline-shift}rem;
-        //         }
-        //     }
+        @include breakpoint-layout(break-1) {
+            @include rem(text-indent, 3rem !important);
         }
+    }
+}
+
+cite {
+    font-family: font-family-of($body-type);
+    font-weight: normal;
+    @include type($body-type, 1.125rem, 2, 0, 0);
+    display: block;
+    @include rem(padding-left, 3.25rem);
 }
 
 // Horizontal rule.
@@ -205,6 +264,7 @@ hr {
     @include rem(padding-top, 1rem);
     @include rem(padding-bottom, 1rem);
     margin: 0;
+    height: 0;
 }
 
 // Code block.
@@ -212,6 +272,7 @@ code, pre {
     background-color: site-color(steel);
     color: #fff;
     font-family: font-family-of($monospace-type);
+    @include rem(line-height, 1rem);
 }
 
 pre {

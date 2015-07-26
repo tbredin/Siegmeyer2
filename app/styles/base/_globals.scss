@@ -56,14 +56,15 @@ nav li {
 .sidebar {
     @include breakpoint-layout(break-1) {
         @include rem(padding-top, 1rem);
-        @include rem(padding-left, 1rem);
-        @include rem(margin-left, 1rem);
         @include rem(margin-bottom, 2rem);
-        width: span(3);
+        @include span(3 last);
         float: right;
-        box-sizing: border-box;
     }
     @include breakpoint-layout(break-2) {
         width: span(4);
     }
+}
+
+.clear {
+    @include clearfix;
 }

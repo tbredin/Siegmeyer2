@@ -1,0 +1,305 @@
+// grid classes
+// this file is heavy on sass compile time (adds approx 6.5s!!!)
+
+@mixin span-common($bpn: "xs") {
+    @if $bpn == "xs" {
+        @extend %span-commmon-xs;
+    } @else if $bpn == "sm" {
+        @extend %span-commmon-sm;
+    } @else if $bpn == "md" {
+        @extend %span-commmon-md;
+    } @else if $bpn == "lg" {
+        @extend %span-commmon-lg;
+    }
+}
+
+@mixin nest-common($bpn: "xs") {
+    @if $bpn == "xs" {
+        @extend %nest-commmon-xs;
+    } @else if $bpn == "sm" {
+        @extend %nest-commmon-sm;
+    } @else if $bpn == "md" {
+        @extend %nest-commmon-md;
+    } @else if $bpn == "lg" {
+        @extend %nest-commmon-lg;
+    }
+}
+
+@mixin span-nest-common($bpn: "xs") {
+    @if $bpn == "xs" {
+        @extend %span-nest-commmon-xs;
+    } @else if $bpn == "sm" {
+        @extend %span-nest-commmon-sm;
+    } @else if $bpn == "md" {
+        @extend %span-nest-commmon-md;
+    } @else if $bpn == "lg" {
+        @extend %span-nest-commmon-lg;
+    }
+}
+
+@each $break in $breaks {
+    $bp-name: "xs";
+    @if $break == break-1 {
+        $bp-name: "sm";
+    } @else if $break == break-2 {
+        $bp-name: "md";
+    } @else if $break == break-3 {
+        $bp-name: "lg";
+    }
+
+    @if $break == break-0 {
+        %span-nest-commmon-#{$bp-name} {
+            float: left;
+            box-sizing: susy-get(global-box-sizing);
+        }
+        %span-commmon-#{$bp-name} {
+            @include gutters;
+            @include span-nest-common($bp-name);
+        }
+        %nest-common-#{$bp-name} {
+            padding-left: 0;
+            padding-right: 0;
+            @include span-nest-common($bp-name);
+        }
+    } @else {
+        @include breakpoint-layout($break) {
+            %span-nest-commmon-#{$bp-name} {
+                float: left;
+                box-sizing: susy-get(global-box-sizing);
+            }
+            %span-commmon-#{$bp-name} {
+                @include gutters;
+                @include span-nest-common($bp-name);
+            }
+            %nest-common-#{$bp-name} {
+                padding-left: 0;
+                padding-right: 0;
+                @include span-nest-common($bp-name);
+            }
+        }
+    }
+
+    @for $i from 1 through break-get($break, cols) {
+        .span-#{$bp-name}-#{$i} {
+            @if $break == break-0 {
+                width: span($i);
+                @include span-common($bp-name);
+            } @else {
+                @include breakpoint-layout($break) {
+                    width: span($i);
+                    @include span-common($bp-name);
+                }
+            }
+        }
+
+        // push classes apply a positive margin to the left
+        .push-#{$bp-name}-#{$i} {
+            @if $break == break-0 {
+                margin-left: span($i);
+            } @else {
+                @include breakpoint-layout($break) {
+                    margin-left: span($i);
+                }
+            }
+        }
+
+        // pull classes apply a negative margin to the right
+        // useful for right-floated elements or lock classes
+        .pull-#{$bp-name}-#{$i} {
+            @if $break == break-0 {
+                margin-right: -1 * span($i);
+            } @else {
+                @include breakpoint-layout($break) {
+                    margin-right: -1 * span($i);
+                }
+            }
+        }
+    }
+
+    // nested grids (outer)
+    @for $i from 2 through break-get($break, cols) {
+        .nest-#{$bp-name}-#{$i} {
+            @if $break == break-0 {
+                width: span($i nest);
+                @extend %nest-common-#{$bp-name};
+            } @else {
+                @include breakpoint-layout($break) {
+                    width: span($i nest);
+                    @extend %nest-common-#{$bp-name};
+                }
+            }
+        }
+    }
+
+    // nested grids (inner)
+    @for $i from 2 through break-get($break, cols) - 1 {
+        .nest-#{$bp-name}-#{$i} {
+            @if $break == break-0 {
+                @for $j from 1 through $i {
+                    .span-#{$bp-name}-#{$j} {
+                        width: span($j of $i nested);
+                    }
+
+                    .push-#{$bp-name}-#{$j} {
+                        margin-left: span($j of $i nested);
+                    }
+
+                    .pull-#{$bp-name}-#{$j} {
+                        margin-right: -1 * span($j of $i nested);
+                    }
+                }
+            } @else {
+                @include breakpoint-layout($break) {
+                    @for $j from 1 through $i {
+                        .span-#{$bp-name}-#{$j} {
+                            width: span($j of $i nested);
+                        }
+
+                        .push-#{$bp-name}-#{$j} {
+                            margin-left: span($j of $i nested);
+                        }
+
+                        .pull-#{$bp-name}-#{$j} {
+                            margin-right: -1 * span($j of $i nested);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .span-#{$bp-name}-full {
+        @if $break == break-0 {
+            @include span-common($bp-name);
+        } @else {
+            @include breakpoint-layout($break) {
+                @include span-common($bp-name);
+            }
+        }
+    }
+
+    // lock classes float an item to one side and pull following content up to same level
+    .lock-#{$bp-name}-left {
+        @if $break == break-0 {
+            float: left !important;
+            margin-bottom: -1000%;
+        } @else {
+            @include breakpoint-layout($break) {
+                float: left !important;
+                margin-bottom: -1000%;
+            }
+        }
+    }
+    .lock-#{$bp-name}-right {
+        @if $break == break-0 {
+            float: right !important;
+            margin-bottom: -1000%;
+        } @else {
+            @include breakpoint-layout($break) {
+                float: right !important;
+                margin-bottom: -1000%;
+            }
+        }
+    }
+
+    // stack classes employ flexbox to reorder the flow an item. Modern enhancement only
+    .stack-#{$bp-name}-start {
+        @if $break == break-0 {
+            order: -1;
+        } @else {
+            @include breakpoint-layout($break) {
+                order: -1;
+            }
+        }
+    }
+    .stack-#{$bp-name}-normal {
+        @if $break == break-0 {
+            order: 0;
+        } @else {
+            @include breakpoint-layout($break) {
+                order: 0;
+            }
+        }
+    }
+    .stack-#{$bp-name}-end {
+        @if $break == break-0 {
+            order: 1;
+        } @else {
+            @include breakpoint-layout($break) {
+                order: 1;
+            }
+        }
+    }
+
+    // required on parent to allow stack reordering
+    .stack-#{$bp-name}-on {
+        @if $break == break-0 {
+            display: flex;
+            flex-direction: column;
+        } @else {
+            @include breakpoint-layout($break) {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    }
+
+    // cancel stack reording
+    .stack-#{$bp-name}-off {
+        @if $break == break-0 {
+            display: block;
+        } @else {
+            @include breakpoint-layout($break) {
+                display: block;
+            }
+        }
+    }
+}
+
+@mixin lock-reset {
+    float: none !important;
+    margin-bottom: 0;
+}
+
+@if $debug-grid == true and $debug-allow == true {
+    [class*="span-"],
+    [class*="nest-"],
+    [class*="push-"],
+    [class*="pull-"],
+    [class*="stack-"],
+    [class*="lock-"] {
+        &:hover {
+            background-color: transparentize($debug-color, 0.75);
+            outline: 1px solid $debug-color;
+            position: relative;
+
+            &:before {
+                content: attr(class);
+                position: absolute;
+                left: 0;
+                top: 0;
+                background-color: transparentize(#fff, 0.1);
+                border: $debug-color;
+                font-size: 10px;
+                line-height: 12px;
+                color: $debug-color;
+                padding: 0.5em;
+                border-radius: 0 0 4px 4px;
+                letter-spacing: 0.075em;
+                -webkit-font-smoothing: subpixel-antialiased;
+                text-indent: 0;
+                font-family: font-family-of($body-type);
+                z-index: 10000;
+            }
+        }
+    }
+    [class*="nest-"] {
+        &:hover {
+            &:before {
+                bottom: 100%;
+                top: auto;
+                border-radius: 4px 4px 0 0;
+            }
+        }
+    }
+}
