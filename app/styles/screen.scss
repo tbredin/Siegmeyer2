@@ -1,12 +1,18 @@
-/* CSS compiled from SCSS */
-/* --------------------------------------- */
+// =====================================================
+// ------------- Siegmeyer II Main Styles --------------
+// =====================================================
+// @author Thomas Bredin-Grey <tbredin@gmail.com>
+// Siegmeyer II: https://github.com/tbredin/Siegmeyer2
+//               bower install siegmeyer2
+// =====================================================
+
 
 // toggle debug
 $debug-allow: true;
 
 // import layout toolsets
 @import "susy";
-@import "../bower_components/scut/dist/scut";
+@import "../../bower_components/scut/dist/scut";
 
 // custom toolsets
 @import "base/toolsets/toolset__units";

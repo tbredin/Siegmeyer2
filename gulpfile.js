@@ -8,6 +8,7 @@ var critical = require('critical');
 var inlineBase64 = require('gulp-inline-base64');
 // load gulp-* plugins
 var $ = require('gulp-load-plugins')();
+var minifyCss = require('gulp-minify-css');
 
 //not watching
 var watching = false;
@@ -23,25 +24,31 @@ function handleError(err) {
 // compile scss and prefix css
 gulp.task('styles', function () {
     return gulp.src('app/styles/*.scss')
-        .pipe($.rubySass({
-            style: 'expanded',
-            precision: 10,
-            require: 'susy',
+        .pipe($.sass({
+            outputStyle: 'expanded',
+            precision: 4,
+            includePaths: [
+                './bower_components/susy/sass'
+            ],
+            onError: console.error.bind(console, 'Sass error:')
         }))
-        .on("error", handleError)
-        .pipe(inlineBase64({
-            baseDir: 'app/styles/',
-            maxSize: 14 * 1024,
-            debug: true
-        }))
-        .pipe($.autoprefixer('last 2 version', '> 5%', 'ie 8', 'ie 9'))
+        .pipe($.postcss([
+            require('autoprefixer-core')({browsers: ['last 3 versions', '> 5%', 'IE >= 9']}),
+            require('postcss-merge-rules')(),
+            require('postcss-unique-selectors')(),
+            require('postcss-discard-duplicates')()
+        ]))
+        .pipe(gulpif('*.css', $.combineMediaQueries({
+            log: true
+        })))
+        .pipe(gulpif('**/**/screen.css', $.stylestats()))
         .pipe(gulp.dest('.tmp/styles'))
         .pipe($.size());
 });
 
 // modernizr script
 gulp.task('modernizr', function () {
-    return gulp.src('app/bower_components/modernizr/modernizr.js')
+    return gulp.src('./bower_components/modernizr/modernizr.js')
         .pipe(gulp.dest('.tmp/scripts/vendor'))
         .pipe($.size());
 });
@@ -49,7 +56,7 @@ gulp.task('modernizr', function () {
 // vendor scripts
 gulp.task('vendor', function () {
     return gulp.src([
-            'app/bower_components/jquery/dist/jquery.js'
+            './bower_components/jquery/dist/jquery.js'
         ])
         .pipe($.concat('vendor.js'))
         .pipe(gulp.dest('.tmp/scripts'))
@@ -59,7 +66,7 @@ gulp.task('vendor', function () {
 // legacy scripts
 gulp.task('legacy', function () {
     return gulp.src([
-            'app/bower_components/base64/base64.js'
+            './bower_components/base64/base64.js'
         ])
         .pipe($.concat('legacy.js'))
         .pipe(gulp.dest('.tmp/scripts'))
@@ -86,10 +93,7 @@ gulp.task('html', ['styles', 'scripts'], function () {
     var cssFilter = $.filter('**/*.css');
 
     return gulp.src('app/templates/**/*.html')
-        .pipe(fileinclude({
-          prefix: '@@',
-            basepath: '@file'
-        }))
+        .pipe($.preprocess())
         .pipe(gulp.dest('.tmp'))
         .pipe($.size());
 });
@@ -152,7 +156,13 @@ gulp.task('build', ['html', 'images', 'fonts', 'extras'], function () {
 // minify where appropriate & output all generated files from .tmp to dist
 gulp.task('minify', ['tidy'], function () {
     return gulp.src(['.tmp/**/*'], { dot: true })
-        .pipe(gulpif('*.css', $.csso()))
+        .pipe(gulpif('*.css', minifyCss({
+            compatibility: 'ie8'
+        })))
+        .pipe(gulpif('*.css', inlineBase64({
+            baseDir: 'app/styles/',
+            maxWeightResource: 14 * 1024
+        })))
         .pipe(gulpif('*.js', $.uglify()))
         .pipe(gulp.dest('dist'));
 });

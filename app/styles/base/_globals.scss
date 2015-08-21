@@ -30,16 +30,16 @@ svg {
 }
 
 ::placeholder {
-    color: site-color(rose);
+    color: site-color(green);
     transition: color 0.25s ease;
 }
 
 :hover::placeholder {
-    color: lighten(site-color(rose), 10%);
+    color: lighten(site-color(green), 10%);
 }
 
 :focus::placeholder {
-    color: site-color(rose);
+    color: site-color(green);
 }
 
 nav li {
@@ -51,4 +51,20 @@ nav li {
     @include set-container;
     @extend %typeset;
     clear: both;
+}
+
+.sidebar {
+    @include breakpoint-layout(break-1) {
+        @include rem(padding-top, 1rem);
+        @include rem(margin-bottom, 2rem);
+        @include span(3 last);
+        float: right;
+    }
+    @include breakpoint-layout(break-2) {
+        width: span(4);
+    }
+}
+
+.clear {
+    @include clearfix;
 }

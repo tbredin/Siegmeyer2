@@ -1,0 +1,30 @@
+// =====================================================
+// ------------ Siegmeyer II Bower include -------------
+// =====================================================
+// @author Thomas Bredin-Grey <tbredin@gmail.com>
+// Siegmeyer II: https://github.com/tbredin/Siegmeyer2
+//               bower install siegmeyer2
+// =====================================================
+
+// this file can be imported as a bower component
+// just makes siegmeyer mixins available (no output css)
+
+// toggle debug
+$debug-allow: false;
+
+// import layout toolsets
+@import "../../../bower_components/susy/sass/susy";
+@import "../../../bower_components/scut/dist/scut";
+
+// custom toolsets
+@import "styles/base/toolsets/toolset__units";
+@import "styles/base/toolsets/toolset__misc";
+
+// import site base
+// @import "styles/base/reset"; // optional
+@import "styles/base/variables";
+@import "styles/base/mixins";
+
+// Typography and globals
+// @import "styles/base/typography"; // optional
+// @import "styles/base/globals"; // optional

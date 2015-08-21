@@ -1,9 +1,10 @@
+![Siegmeyer2 icon](https://raw.github.com/tbredin/Siegmeyer2/develop/siegmeyer.gif)
 Siegmeyer2
 ==========
 
 Siegmeyer2 is a static SMACSS boilerplate using Susy grids, Siegmeyer typographic rhythm, and Gulp
 
-
+####[View demo](http://tbredin.github.io/Siegmeyer2/)
 
 ### Install
 
@@ -13,34 +14,34 @@ A yeoman generator is available [here](https://github.com/tbredin/generator-sieg
 
 #####Manual install
 
-Node modules:     
-`npm install`      
+Node modules:
+`npm install`
 
-Ruby gems:         
-`bundle`   
+Ruby gems:
+`bundle`
 
-Front end dependancies:       
-`bower install`        
+Front end dependancies:
+`bower install`
 
 
 
-### Watch      
+### Watch
 
-Boot up watch server with gulp:        
-`gulp watch`    
+Boot up watch server with gulp:
+`gulp watch`
 
 
 
 ### Production
 
-Build into `dist` directory with gulp:    
-`gulp build`     
-CSS, JS, and images will be concatenated & minified, PNG fallbacks for SVGs will be generated, critical path CSS will be inlined, and small images (<14kb) will be base64 encoded. 
+Build into `dist` directory with gulp:
+`gulp build`
+CSS, JS, and images will be concatenated & minified, PNG fallbacks for SVGs will be generated, critical path CSS will be inlined, and small images (<14kb) will be base64 encoded.
 
 
-### Susy Toolkit   
-[Susy](http://susy.oddbird.net/) is used for most layout and media queries in Siegmeyer 2.   
-You should familiarise yourself with the [Susy docs](http://susydocs.oddbird.net/en/latest/)  
+### Susy Toolkit
+[Susy](http://susy.oddbird.net/) is used for most layout and media queries in Siegmeyer 2.
+You should familiarise yourself with the [Susy docs](http://susydocs.oddbird.net/en/latest/)
 
 
 ### Using the baseine grid
@@ -83,13 +84,13 @@ To set type size, line height, padding, and scaling, you must provide the font v
 ```
 Line height, padding leader & trailer are in rems. 1 baseline unit = 1rem
 
-The `$scale-ratio` parameter allows you to easily set how much scaling of `$fontsize` to apply to your type across multiple breakpoints (useful for large headings). Just enter the full scaling you desire for the final (widest) breakpoint, and Siegmeyer will automatically calculate intermediary scaling for any breakpoints in between, while maintaining rhythm. 
+The `$scale-ratio` parameter allows you to easily set how much scaling of `$fontsize` to apply to your type across multiple breakpoints (useful for large headings). Just enter the full scaling you desire for the final (widest) breakpoint, and Siegmeyer will automatically calculate intermediary scaling for any breakpoints in between, while maintaining rhythm.
 
 For example; the above mixin will initially set the type to 1.25rem, and then incrementally scale up on each breakpoint in between until it reaches 2.5rem for the widest breakpoint (1.25rem * 2).
 
 
 ### Using Susy grids in Siegmeyer
-Customise your breakpoints as follows: 
+Customise your breakpoints as follows:
 
 ```SCSS
 // base/_variables.scss
@@ -129,18 +130,29 @@ Use Siegmeyer's `breakpoint-layout` mixin to apply your styles:
 ```SCSS
 .selector {
     // Siegmeyer breakpoint-layout mixin
-    @include breakpoint-layout(break-1) { 
+    @include breakpoint-layout(break-1) {
         // use Susy mixins like normal
-        margin-left: span(1 of 4); 
+        margin-left: span(1 of 4);
         width: span(3);
     }
 }
  ```
 
 
+###As a Bower component
 
-###Roadmap      
+You can also import Siegmeyer's SCSS as a bower component.
+This just makes all siegmeyer mixins available (does not output css)      
+`bower install --save-dev siegmeyer2`     
 
-- Nicer HTML page / defaults
-- Improve accuracy of `trailer` & `leader` mixins
-- further optimise CSS output by type mixins
+SCSS:    
+`@import "bower_components/siegmeyer2/app/siegmeyer"`
+
+It is recommended to copy `base/_variables.scss` into your app and modify to suit your config
+
+
+###Roadmap
+
+- More demos (varied config examples)
+- allow font size & leading to be set via px
+- add ability to reign in extra top line space on small type
