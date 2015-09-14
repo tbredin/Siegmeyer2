@@ -17,7 +17,7 @@ $site-colors: (
     white: #fff
 ) !default;
 
-$site-color-names: map-keys($site-colors);
+$site-color-names: map-keys($site-colors) !default;
 
 // color variable helper
 @function site-color($color) {
@@ -63,7 +63,7 @@ $current-root: map-get($rootsizes, break-0) !default;
 
 // responsive grid settings
 // column base width
-$column-width: 6rem;
+$column-width: 6rem !default;
 
 // column number at each breakpoint
 $break-0-cols: 6 !default;
@@ -83,7 +83,7 @@ $break-1-max: ($column-width / 1rem) * nth($sizes, 2) * 1px * $break-1-cols  !de
 $break-2-max: ($column-width / 1rem) * nth($sizes, 3) * 1px * $break-2-cols  !default;
 
 // susy breakpoint layouts
-// format: [column-number] ([relative proportion of column] [relative proportion of gutter])
+// format: [column-number] ([relative proportion of column] [relative proportion of gutter]) [any other susy settings]
 $break-0-layout: $break-0-cols ($column-width $gutter) inside-static !default;
 $break-1-layout: $break-1-cols ($column-width $gutter) inside-static !default;
 $break-2-layout: $break-2-cols ($column-width $gutter) inside-static !default;
@@ -122,6 +122,9 @@ $breakpoint-count: length(map-keys($breakpoint-map)) !default;
 
 // breakpoint names
 $breaks: map-keys($breakpoint-map) !default;
+
+// store current breakpoint for reference withiin breakpoint mixins
+$current-breakpoint: break-0 !default;
 
 // debug grid columns, baseline grid & breakpoints
 $debug-grid: true !default;
