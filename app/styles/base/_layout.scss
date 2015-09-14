@@ -1,5 +1,13 @@
-// grid classes
+// Grid classes
 // this file is heavy on sass compile time (adds approx 6.5s!!!)
+// shouldn't need modifying
+
+// Basic .span usage:
+// .span-[size]-[cols]
+// where [size] can be xs, sm, md, or lg, and
+// [cols] can be 1 to the max cols for the given [size] (see base/_variables.scss)
+
+// See comments below for explanations of other grid helper classes
 
 @mixin span-common($bpn: "xs") {
     @if $bpn == "xs" {
@@ -147,6 +155,11 @@
                     .pull-#{$bp-name}-#{$j} {
                         margin-right: -1 * span($j of $i nested);
                     }
+
+                    .nest-#{$bp-name}-#{$i} {
+                        width: span($j of $i nest);
+                        @extend %nest-common-#{$bp-name};
+                    }
                 }
             } @else {
                 @include breakpoint-layout($break) {
@@ -161,6 +174,11 @@
 
                         .pull-#{$bp-name}-#{$j} {
                             margin-right: -1 * span($j of $i nested);
+                        }
+
+                        .nest-#{$bp-name}-#{$i} {
+                            width: span($j of $i nest);
+                            @extend %nest-common-#{$bp-name};
                         }
                     }
                 }
@@ -184,22 +202,22 @@
     .lock-#{$bp-name}-left {
         @if $break == break-0 {
             float: left !important;
-            margin-bottom: -1000%;
+            // margin-bottom: -1000%;
         } @else {
             @include breakpoint-layout($break) {
                 float: left !important;
-                margin-bottom: -1000%;
+                // margin-bottom: -1000%;
             }
         }
     }
     .lock-#{$bp-name}-right {
         @if $break == break-0 {
             float: right !important;
-            margin-bottom: -1000%;
+            // margin-bottom: -1000%;
         } @else {
             @include breakpoint-layout($break) {
                 float: right !important;
-                margin-bottom: -1000%;
+                // margin-bottom: -1000%;
             }
         }
     }
@@ -207,10 +225,10 @@
     // stack classes employ flexbox to reorder the flow an item. Modern enhancement only
     .stack-#{$bp-name}-start {
         @if $break == break-0 {
-            order: -1;
+            order: -100;
         } @else {
             @include breakpoint-layout($break) {
-                order: -1;
+                order: -100;
             }
         }
     }
@@ -225,10 +243,10 @@
     }
     .stack-#{$bp-name}-end {
         @if $break == break-0 {
-            order: 1;
+            order: 100;
         } @else {
             @include breakpoint-layout($break) {
-                order: 1;
+                order: 100;
             }
         }
     }
@@ -238,10 +256,26 @@
         @if $break == break-0 {
             display: flex;
             flex-direction: column;
+
+            [class*='span-'] {
+                @for $k from 1 through 10 {
+                    &:nth-child(#{$k})) {
+                        order: $k;
+                    }
+                }
+            }
         } @else {
             @include breakpoint-layout($break) {
                 display: flex;
                 flex-direction: column;
+
+                [class*='span-'] {
+                    @for $k from 1 through 10 {
+                        &:nth-child(#{$k})) {
+                            order: $k;
+                        }
+                    }
+                }
             }
         }
     }
@@ -250,19 +284,80 @@
     .stack-#{$bp-name}-off {
         @if $break == break-0 {
             display: block;
+
+            [class*='span-'] {
+                order: 1;
+            }
         } @else {
             @include breakpoint-layout($break) {
                 display: block;
+
+                [class*='span-'] {
+                    order: 1;
+                }
             }
         }
     }
+
+    // push down one item in flex stack
+    .stack-#{$bp-name}-plus {
+        @if $break == break-0 {
+            &[class*='span-'] {
+                @for $k from 1 through 10 {
+                    &:nth-child(#{$k})) {
+                        order: $k + 2;
+                    }
+                }
+            }
+        } @else {
+            @include breakpoint-layout($break) {
+                &[class*='span-'] {
+                    @for $k from 1 through 10 {
+                        &:nth-child(#{$k})) {
+                            order: $k + 2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // push up one item in flex stack
+    .stack-#{$bp-name}-minus {
+        @if $break == break-0 {
+            &[class*='span-'] {
+                @for $k from 1 through 10 {
+                    &:nth-child(#{$k})) {
+                        order: $k - 2;
+                    }
+                }
+            }
+        } @else {
+            @include breakpoint-layout($break) {
+                &[class*='span-'] {
+                    @for $k from 1 through 10 {
+                        &:nth-child(#{$k})) {
+                            order: $k - 2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // apply gutters to all grid items
+    [class*="span-"] {
+        @include rem(padding-left, $gutter / 2);
+        @include rem(padding-right, $gutter / 2);
+    }
 }
 
+// cancel a lock class
 @mixin lock-reset {
     float: none !important;
     margin-bottom: 0;
 }
 
+// allow debugging
 @if $debug-grid == true and $debug-allow == true {
     [class*="span-"],
     [class*="nest-"],
@@ -280,6 +375,7 @@
                 position: absolute;
                 left: 0;
                 top: 0;
+                bottom: auto;
                 background-color: transparentize(#fff, 0.1);
                 border: $debug-color;
                 font-size: 10px;

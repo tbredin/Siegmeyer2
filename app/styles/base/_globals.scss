@@ -53,6 +53,10 @@ nav li {
     clear: both;
 }
 
+.main-content {
+    @include rem(margin-top, 3rem);
+}
+
 .sidebar {
     @include breakpoint-layout(break-1) {
         @include rem(padding-top, 1rem);
