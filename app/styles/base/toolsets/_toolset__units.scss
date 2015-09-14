@@ -13,10 +13,10 @@
         $result: $number / 1px;
     } @else if unit($number) == "em" {
         $result: $number / 1em;
-    } @else if unit($number) == "%" {
-        $result: $number / 1%;
     } @else if unit($number) == "rem" {
         $result: $number / 1rem;
+    } @else if unit($number) == "%" {
+        $result: $number / 1%;
     }
     @return $result;
 }
