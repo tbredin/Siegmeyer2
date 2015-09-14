@@ -26,7 +26,7 @@
         } @else {
             @warn "#{$break} is not a set breakpoint variable";
         }
-    } @else if  $value == number {
+    } @else if $value == number {
         @if $unit == "px" or $unit == "" {
             $break-get: no-unit($break);
             $max-val: no-unit($max);
@@ -34,11 +34,11 @@
             // If using other numbers output value in ems either for min, min & max or max width breakpoints.
             $query: "all" !default;
             @if $break-get != 0 and $max-val != 0 {
-                $query: "(min-width: #{$break-get / 16 * 1em}) and (max-width: #{$max-val / 16 * 1em})";
+                $query: "(min-width: #{$break-get / 16 * 1em}) and (max-width: #{$max-val / 16 * 1em - px-to-ems(0.5px)})";
             } @else if $break-get != 0 and $max-val == 0 {
                 $query: "(min-width: #{$break-get / 16 * 1em})";
             } @else if $break-get == 0 and $max-val != 0 {
-                $query: "(max-width: #{$max-val / 16 * 1em})";
+                $query: "(max-width: #{$max-val / 16 * 1em - px-to-ems(0.5px)})";
             }
             @media #{$query} { @content; }
         } @else {
@@ -74,6 +74,17 @@
     @return map-get(map-get($breakpoint-map, $break), $val);
 }
 
+// apply a style at all breakpoints, taking into account any change in baseline at different breakpoints
+@mixin all-breakpoints {
+    @content;
+
+    @each $break in $breaks {
+        @include breakpoint-layout($break) {
+            @content;
+        }
+    }
+}
+
 // sets containers for all breakpoints. It is important to use this to avoid incorrect breakpoint values due to type scaling
 @mixin set-container {
     @extend %container;
@@ -85,10 +96,11 @@
     padding-right: $gutter;
     box-sizing: border-box;
 
-    @if break-get(break-0, max) != none {
-        $break-adjusted: px-to-ems(break-get(break-0, max));
+    @if break-get(break-0, max) != none or unit(break-get(break-0, max)) != "%" {
+        $break-adjusted: px-to-ems(break-get(break-0, max), 1px * nth($sizes, 1));
         @if $debug-grid == true and $debug-allow == true {
             @include container($break-adjusted show-columns);
+            background-clip: border-box;
         } @else {
             @include container($break-adjusted hide);
         }
@@ -96,12 +108,13 @@
 
     $i: 1;
     @each $break in $breaks {
-         @if ($break != break-0) and break-get($break, max) != none {
+         @if ($break != break-0) and break-get($break, max) != none or unit(break-get(break-0, max)) != "%" {
             @include breakpoint-layout($break) {
-                $break-adjusted: px-to-ems(break-get($break, max));
+                $break-adjusted: px-to-ems(break-get($break, max), 1px * nth($sizes, $i));
 
                 @if $debug-grid == true and $debug-allow == true {
                     @include container($break-adjusted show-columns);
+                    background-clip: border-box;
                 } @else {
                     @include container($break-adjusted hide);
                 }
@@ -229,7 +242,7 @@
         }
     }
 
-    > svg {
+    > svg, > img {
         @extend %svg-fill;
     }
 }
@@ -240,6 +253,8 @@
     top: 0;
     left: 0;
     height: 100%;
+    max-width: 100%;  // seems to fix some versions of android
+    max-height: 100%; // seems to fix some versions of android
 }
 
 // svg background image with png fallbacks
@@ -562,22 +577,62 @@
 }
 
 // better text decoration
-@mixin text-link($color: #fff, $hover: $color, $pos: 98%) {
+@mixin text-link($color: #fff, $hover: $color, $pos: 98%, $hover-opacity: 0.6) {
     font-family: font-family-of($display-type);
     -webkit-font-smoothing: antialiased;
     color: $color;
-    background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,transparentize($color, 0.4) 50%);
+    background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,transparentize($color, 0.6) 50%);
     background-repeat: repeat-x;
     background-size: 2px 0.065em;
     background-position: 0 $pos;
     transition: color .1s ease, background .5s ease, outline 0.25s ease;
+    cursor: pointer;
 
-    &:hover {
-        color: $hover;
-        background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,transparentize($hover, 0.15) 50%);
+    .fill {
+        fill: $color;
+    }
+    .stroke {
+        stroke: $color;
     }
 
-    .lt-ie10 & {
+    @if $color == $hover and $hover-opacity == 0.6 {
+        $hover-opacity: 0.3;
+    }
+
+    @if $hover != false {
+        &:hover {
+            color: $hover;
+            background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0) 50%,transparentize($hover, $hover-opacity) 50%);
+
+            .fill {
+                fill: $hover;
+            }
+            .stroke {
+                stroke: $hover;
+            }
+        }
+    }
+
+    .lte-ie9 & {
         text-decoration: underline; // ie9 only
+    }
+}
+
+// remove text link style
+@mixin reset-link($hard-reset: false) {
+    @if $hard-reset == false {
+        &, &:hover {
+            background-image: none;
+        }
+        .lte-ie9 & {
+            text-decoration: none;
+        }
+    } @else {
+        &, &:hover {
+            background-image: none !important;
+        }
+        .lte-ie9 & {
+            text-decoration: none !important;
+        }
     }
 }
