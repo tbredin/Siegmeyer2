@@ -10,7 +10,7 @@
 // just makes siegmeyer mixins available (no output css)
 
 // toggle debug
-$debug-allow: false;
+$debug-allow: false !default;
 
 // import layout toolsets
 @import "../../../bower_components/susy/sass/susy";
