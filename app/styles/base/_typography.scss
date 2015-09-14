@@ -25,22 +25,32 @@ body {
     position: relative;
 
     @if ($debug-baseline == true and $debug-allow == true) {
-        &:after {
+        &:before {
             // Demo baseline grid styles
             content: "";
-            display: block;
+            display: block !important;
             pointer-events: none;
             position: absolute;
             top: 0;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to bottom,rgba(50,50,50, 0.2)0,rgba(50,50,50, 0.2)1px,rgba(255, 255, 255, 0.3)1px,rgba(255, 255, 255, 0)2px, rgba(50,50,50, 0.0)1rem, rgba(50,50,50, 0.1)1rem,rgba(50,50,50, 0.1)1.05rem,rgba(255, 255, 255, 0.1)1.05rem,rgba(255, 255, 255, 0)1.125rem);
-            @include rem(background-size, 100% 2rem);
+            background-image: linear-gradient(to bottom,rgba(50,50,50, 0.3)0,rgba(50,50,50, 0.3)1px,rgba(255, 255, 255, 0.3)1px,rgba(255, 255, 255, 0)2px, rgba(50,50,50, 0.0)1rem, rgba(50,50,50, 0.125)1rem,rgba(50,50,50, 0.125)1.05rem,rgba(255, 255, 255, 0.125)1.05rem,rgba(255, 255, 255, 0)1.125rem) !important;
+            background-size: 100% 2rem;
             z-index: 1000;
+	    transform: scaleY(1.0001);
+            transform-origin: center top;
+
+            @include breakpoint-layout(break-1) {
+                transform: scaleY(1);
+            }
+            @include breakpoint-layout(break-2) {
+                transform: scaleY(1.001);
+            }
         }
     }
 }
+
 
 // Links.
 %link-style {
@@ -50,6 +60,12 @@ body {
 // Nice underlines for text links.
 a {
     @extend %link-style;
+}
+
+// inherit type rhythm of parent (eg: useful for links inside a type element)
+%inherit-type {
+    font-size: inherit;
+    @include type-match;
 }
 
 // Paragraphs. OpenType ligatures and oldstyle figures enabled if available.
@@ -115,51 +131,34 @@ h1, .h1-style {
 
     @include type($display-type, px-to-rems(32px), 3, 0, 4);
 
-    // tablet size for h1, maybe?
-    // @include breakpoint-layout(break-1) {
-    //     @include type($display-type, px-to-rems(64px * 3/5), 3, 0, 2);
-    // }
-
     @include breakpoint-layout(break-2) {
-        max-width: 20em; // measure accurate to designs
+        max-width: span(10) - 2%; // set measure
 
-        @include type($display-type, px-to-rems(64px * 3/4), 4, 0, 2);
+        @include type($display-type, px-to-rems(64px), 4, 0, 2);
     }
 }
 
 // Heading level 2.
 h2, .h2-style {
-    @include type($display-type, px-to-rems(28px), 3, 0, 2);
+    @include type($display-type, px-to-rems(24px), 3, 4, 2);
 
-    // h2 following any other main type elements should have 4 lines above
-    h3 + &,
-    h4 + &,
-    h5 + &,
-    h6 + &,
-    p + &,
-    ul + &,
-    ol + &,
-    blockquote+ & {
-        @include type($display-type, px-to-rems(28px), 3, 4, 2);
+    @include breakpoint-layout(break-2) {
+        @include type($display-type, px-to-rems(32px), 3, 4, 2);
     }
+
+
 }
 
 // Heading level 3.
 h3, .h3-style {
     font-weight: bold-of($display-type);
 
-    @include type($display-type, px-to-rems(18px), 2, 0, 2);
+    @include type($display-type, px-to-rems(20px), 2, 1, 2);
 
-    // h3 following any other main type elements should have 1 line above
-    h4 + &,
-    h5 + &,
-    h6 + &,
-    p + &,
-    ul + &,
-    ol + &,
-    blockquote+ & {
-        @include type($display-type, px-to-rems(18px), 2, 1, 2);
+    @include breakpoint-layout(break-2) {
+        @include type($display-type, px-to-rems(24px), 2, 1, 2);
     }
+
 }
 
 // Heading level 4, 5, 6.
@@ -169,16 +168,10 @@ h6, .h6-style {
     font-weight: bold-of($display-type);
 
     @include type($display-type, px-to-rems(16px), 2, 0, 1);
-
-    p + &,
-    ul + &,
-    ol + &,
-    blockquote+ & {
-        @include type($display-type, px-to-rems(16px), 2, 1, 1);
-    }
 }
 
 h5, h6 {
+    // Sometimes discourage use of h5 and h6
     // @include disallow("h5 or h6");
 }
 
@@ -230,18 +223,22 @@ small {
 blockquote {
     clear: both;
     @include clearfix;
+    border: 0 none;
+    @include rem(border-left, 0.5rem solid);
+    @include rem(padding-left, 1rem);
+    @include rem(margin-top, 2rem);
+    @include rem(margin-bottom, 3rem);
 
     p {
         font-family: font-family-of($display-type);
         color: site-color(steel);
         margin-bottom: 0;
-        @include type($display-type, 1.5rem, 2, 2, 3);
+        @include type($display-type, px-to-rems(18px), 2, 1, 1);
         position: relative;
         overflow: visible;
-        @include rem(text-indent, 2.5rem !important);
 
-        @include breakpoint-layout(break-1) {
-            @include rem(text-indent, 3rem !important);
+        @include breakpoint-layout(break-2) {
+            @include type($body-type, px-to-rems(24px), 2, 1, 1);
         }
     }
 }
@@ -251,7 +248,11 @@ cite {
     font-weight: normal;
     @include type($body-type, 1.125rem, 2, 0, 0);
     display: block;
-    @include rem(padding-left, 3.25rem);
+    @include type($body-type, px-to-rems(16px), 2, 1, 1);
+
+    @include breakpoint-layout(break-2) {
+        @include type($body-type, px-to-rems(18px), 2, 1, 1);
+    }
 }
 
 // Horizontal rule.
@@ -275,6 +276,7 @@ code, pre {
     @include rem(line-height, 1rem);
 }
 
+// Preformatted text.
 pre {
     @include rem(border-radius, 0.3rem);
     display: block;
@@ -291,6 +293,7 @@ code {
     @include rem(line-height, 1rem);
 }
 
+// typographic utility classes
 // Letter space those capitals people, Jan Tschichold would be proud.
 .upper {
     text-transform: uppercase;
@@ -313,3 +316,20 @@ code {
     font-feature-settings: 'onum' 1, 'kern' 1;
 }
 
+// No text wrap
+.nowrap {
+    white-space: nowrap;
+}
+
+// Center text
+.center {
+    text-align: center;
+}
+
+// Font weights
+.weight-regular {
+    font-weight: normal;
+}
+.weight-bold {
+    font-weight: bold;
+}
