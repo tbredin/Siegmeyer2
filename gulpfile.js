@@ -217,3 +217,24 @@ gulp.task('watch', ['html', 'connect', 'serve'], function () {
     gulp.watch('app/scripts/**/*.js', ['scripts']);
     gulp.watch('app/images/**/*', ['images']);
 });
+
+// Bump version
+function inc(importance) {
+    // get all the files to bump version in
+    return gulp.src(['./package.json', './bower.json'])
+        // bump the version number in those files
+        .pipe($.bump({type: importance}))
+        // save it back to filesystem
+        .pipe(gulp.dest('./'))
+        // commit the changed version number
+        .pipe($.git.commit('version bump'))
+
+        // read only one file to get the version number
+        .pipe($.filter('package.json'))
+        // **tag it in the repository**
+        .pipe($.tagVersion());
+}
+
+gulp.task('patch', function() { return inc('patch'); })
+gulp.task('feature', function() { return inc('minor'); })
+gulp.task('release', function() { return inc('major'); })
