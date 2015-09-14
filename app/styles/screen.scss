@@ -16,6 +16,7 @@ $debug-allow: true;
 
 // custom toolsets
 @import "base/toolsets/toolset__units";
+@import "base/toolsets/toolset__easing";
 @import "base/toolsets/toolset__misc";
 
 // import site base
@@ -24,7 +25,7 @@ $debug-allow: true;
 @import "base/webfonts";
 @import "base/mixins";
 
-// Siegmeyer 2 new typography defaults
+// typography defaults
 @import "base/typography";
 @import "base/globals";
 
