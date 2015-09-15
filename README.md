@@ -2,11 +2,24 @@
 Siegmeyer2
 ==========
 
-Siegmeyer2 is a static SMACSS boilerplate using Susy grids, Siegmeyer typographic rhythm, and Gulp.
+Siegmeyer2 is a static SMACSS boilerplate using Susy grids and Siegmeyer typographic rhythm. 
+It can be used as a standalone boilerplate, or just the SCSS tools can be imported via installation as a bower component (recommended).
 
 ####[View demo](http://tbredin.github.io/Siegmeyer2/)
 
 ### Install
+
+#####As a Bower component
+
+Install as a Bower component to import Siegmeyer's SCSS setup.
+This just makes all siegmeyer mixins available (does not output css):    
+`bower install --save-dev siegmeyer2`     
+
+SCSS:    
+`@import "bower_components/siegmeyer2/app/siegmeyer"`
+
+Then copy `base/_variables.scss` into your app and modify to suit your config, (change the defaults where required)
+
 
 #####Yeoman generator
 A yeoman generator is available [here](https://github.com/tbredin/generator-siegmeyer2).
@@ -137,19 +150,6 @@ Use Siegmeyer's `breakpoint-layout` mixin to apply your styles:
     }
 }
  ```
-
-
-###As a Bower component
-
-You can also import Siegmeyer's SCSS as a bower component.
-This just makes all siegmeyer mixins available (does not output css):
-`bower install --save-dev siegmeyer2`     
-
-SCSS:    
-`@import "bower_components/siegmeyer2/app/siegmeyer"`
-
-It is recommended to copy `base/_variables.scss` into your app and modify to suit your config.
-
 
 ###Roadmap
 
