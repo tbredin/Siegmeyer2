@@ -2,14 +2,14 @@
 Siegmeyer2
 ==========
 
-Siegmeyer2 is a static SMACSS boilerplate using Susy grids, Siegmeyer typographic rhythm, and Gulp
+Siegmeyer2 is a static SMACSS boilerplate using Susy grids, Siegmeyer typographic rhythm, and Gulp.
 
 ####[View demo](http://tbredin.github.io/Siegmeyer2/)
 
 ### Install
 
 #####Yeoman generator
-A yeoman generator is available [here](https://github.com/tbredin/generator-siegmeyer2)
+A yeoman generator is available [here](https://github.com/tbredin/generator-siegmeyer2).
 
 
 #####Manual install
@@ -41,12 +41,12 @@ CSS, JS, and images will be concatenated & minified, PNG fallbacks for SVGs will
 
 ### Susy Toolkit
 [Susy](http://susy.oddbird.net/) is used for most layout and media queries in Siegmeyer 2.
-You should familiarise yourself with the [Susy docs](http://susydocs.oddbird.net/en/latest/)
+You should familiarise yourself with the [Susy docs](http://susydocs.oddbird.net/en/latest/).
 
 
-### Using the baseine grid
+### Using the baseline grid
 
-Type can be set to a different scale at each breakpoint. Line height defaults to twice the body font-size
+Type can be set to a different scale at each breakpoint. Line height defaults to twice the body font-size:
 ```SCSS
 // base/_variables.scss
 // Root font-sizes for each breakpoint. Set to half desired line-height of body text.
@@ -86,7 +86,7 @@ Line height, padding leader & trailer are in rems. 1 baseline unit = 1rem
 
 The `$scale-ratio` parameter allows you to easily set how much scaling of `$fontsize` to apply to your type across multiple breakpoints (useful for large headings). Just enter the full scaling you desire for the final (widest) breakpoint, and Siegmeyer will automatically calculate intermediary scaling for any breakpoints in between, while maintaining rhythm.
 
-For example; the above mixin will initially set the type to 1.25rem, and then incrementally scale up on each breakpoint in between until it reaches 2.5rem for the widest breakpoint (1.25rem * 2).
+For example: the above mixin will initially set the type to 1.25rem, and then incrementally scale up on each breakpoint in between until it reaches 2.5rem for the widest breakpoint (1.25rem * 2).
 
 
 ### Using Susy grids in Siegmeyer
@@ -142,17 +142,17 @@ Use Siegmeyer's `breakpoint-layout` mixin to apply your styles:
 ###As a Bower component
 
 You can also import Siegmeyer's SCSS as a bower component.
-This just makes all siegmeyer mixins available (does not output css)      
+This just makes all siegmeyer mixins available (does not output css):
 `bower install --save-dev siegmeyer2`     
 
 SCSS:    
 `@import "bower_components/siegmeyer2/app/siegmeyer"`
 
-It is recommended to copy `base/_variables.scss` into your app and modify to suit your config
+It is recommended to copy `base/_variables.scss` into your app and modify to suit your config.
 
 
 ###Roadmap
 
-- More demos (varied config examples)
+- more demos (varied config examples)
 - allow font size & leading to be set via px
 - add ability to reign in extra top line space on small type
